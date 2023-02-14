@@ -11,6 +11,7 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -30,6 +31,12 @@ public class Request {
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
     private RequestMetaInfo meta;
+
+    @Column(updatable = false)
+    private Long dealerId;
+
+    @Column(updatable = false)
+    private String orderId;
 
     @CreatedDate
     private Date createdAt;

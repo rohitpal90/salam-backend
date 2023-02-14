@@ -3,6 +3,7 @@ package com.salam.dms.config.auth;
 import eu.fraho.spring.securityJwt.base.JwtAuthenticationTokenFilter;
 import eu.fraho.spring.securityJwt.base.config.JwtSecurityConfig;
 import eu.fraho.spring.securityJwt.base.service.JwtTokenService;
+import eu.fraho.spring.securityJwt.hibernate.service.HibernateTokenStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,13 +57,19 @@ public class SecurityConfig extends JwtSecurityConfig {
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/login").permitAll();
-                    registry.requestMatchers("/login/check").permitAll();
+                    registry.requestMatchers("/auth/login/1").permitAll();
+                    registry.requestMatchers("/auth/login/2").permitAll();
+                    registry.requestMatchers("/auth/refresh").permitAll();
                     registry.anyRequest().authenticated();
                 })
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
+    }
+
+    @Bean
+    public HibernateTokenStore refreshTokenStore() {
+        return new HibernateTokenStore();
     }
 
 }

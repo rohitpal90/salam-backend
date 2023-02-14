@@ -1,6 +1,8 @@
 package com.salam.dms.services.guards;
 
 import com.salam.dms.adapter.model.request.AppointmentRequest;
+import com.salam.dms.config.exception.AppError;
+import com.salam.dms.config.exception.AppErrors;
 import com.salam.dms.config.sm.GuardHandler;
 import com.salam.dms.model.Event;
 import com.salam.dms.model.RequestContext;
@@ -9,16 +11,19 @@ import com.salam.dms.services.AppointmentService;
 import lombok.AllArgsConstructor;
 import org.springframework.statemachine.StateContext;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
+
+import static com.salam.dms.config.exception.AppErrors.NO_APPOINTMENTS_FOUND;
 
 @Component
 @AllArgsConstructor
-public class AppointmentBookGuard implements GuardHandler {
+public class AppointmentBookGuard extends GuardHandler {
 
-    private static AppointmentService appointmentService;
+    private final AppointmentService appointmentService;
 
 
     @Override
-    public boolean handle(StateContext<States, Event> context) {
+    public void handle(StateContext<States, Event> context) {
         var requestContext = RequestContext.fromStateContext(context);
 
         // use slot
@@ -31,11 +36,18 @@ public class AppointmentBookGuard implements GuardHandler {
         appointmentRequest.setSubsPlanId("4003");
         var appointments = appointmentService.fetchAppointments(appointmentRequest);
 
-        return appointments.size() > 0;
+        if (CollectionUtils.isEmpty(appointments)) {
+            throw AppError.create(NO_APPOINTMENTS_FOUND);
+        }
+
+        var metaInfo = requestContext.getMetaInfo();
+        metaInfo.setAppointment(appointments.get(0));
+        requestContext.setMetaInfo(metaInfo);
     }
 
     @Override
     public Event forType() {
         return Event.SCHEDULE;
     }
+
 }

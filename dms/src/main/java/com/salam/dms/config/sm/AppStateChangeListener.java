@@ -7,6 +7,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.Message;
 import org.springframework.statemachine.StateContext;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.listener.StateMachineListenerAdapter;
 import org.springframework.statemachine.state.State;
 import org.springframework.stereotype.Service;
@@ -21,12 +22,7 @@ public class AppStateChangeListener extends StateMachineListenerAdapter<States, 
 
     @Override
     public void eventNotAccepted(Message<Event> event) {
-        log.error("Event not accepted: {}", event.getPayload());
-    }
-
-    @Override
-    public void stateChanged(State<States, Event> from, State<States, Event> to) {
-        log.info("State changed {} -> {}", from.getId().name(), to.getId().name());
+        log.error("Event not : {}", event.getPayload());
     }
 
     @Override

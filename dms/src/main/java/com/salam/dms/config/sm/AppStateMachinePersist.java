@@ -1,6 +1,7 @@
 package com.salam.dms.config.sm;
 
 import com.salam.dms.db.entity.Request;
+import com.salam.dms.db.entity.Transition;
 import com.salam.dms.model.Event;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.States;

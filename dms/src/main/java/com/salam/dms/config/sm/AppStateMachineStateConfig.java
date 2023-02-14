@@ -57,33 +57,44 @@ public class AppStateMachineStateConfig extends EnumStateMachineConfigurerAdapte
                     .event(VERIFY_MOBILE).guard(getEventGuard(VERIFY_MOBILE));
 
         transitions.withExternal()
+                .source(MOBILE_VERIFICATION).target(CANCELLED).event(CUSTOMER_CANCEL);
+
+        transitions.withExternal()
                 .source(INSTALLATION_SCHEDULE).target(REQUEST_CONFIRMATION)
                 .event(SCHEDULE).guard(getEventGuard(SCHEDULE));
 
-//        transitions.withExternal()
-//                .source(MOBILE_VERIFICATION).target(CANCELLED).event(CUSTOMER_CANCEL)
-//                .and().withExternal()
-//                .source(MOBILE_VERIFICATION).target(INSTALLATION_SCHEDULE).event(VERIFY_MOBILE)
-//                .and().withExternal()
-//                .source(MOBILE_VERIFICATION).target(CANCELLED).event(CUSTOMER_CANCEL)
-//                .and().withExternal()
-//                .source(INSTALLATION_SCHEDULE).target(REQUEST_CONFIRMATION).event(SCHEDULE)
-//                .and().withExternal()
-//                .source(INSTALLATION_SCHEDULE).target(CANCELLED).event(CUSTOMER_CANCEL)
-//                .and().withExternal()
-//                .source(REQUEST_CONFIRMATION).target(REVIEW).event(CUSTOMER_CONFIRMATION)
-//                .and().withExternal()
-//                .source(REQUEST_CONFIRMATION).target(CANCELLED).event(CUSTOMER_CANCEL)
-//                .and().withExternal()
-//                .source(REVIEW).target(INSTALLATION).event(CUSTOMER_CONFIRMATION)
-//                .and().withExternal()
-//                .source(REVIEW).target(CANCELLED).event(CUSTOMER_CANCEL)
-//                .and().withExternal()
-//                .source(REVIEW).target(REJECTED).event(REVIEW_REJECTED)
-//                .and().withExternal()
-//                .source(INSTALLATION).target(COMPLETED).event(COMPLETE)
-//                .and().withExternal()
-//                .source(INSTALLATION).target(CANCELLED).event(CUSTOMER_CANCEL);
+        transitions.withExternal()
+                .source(INSTALLATION_SCHEDULE).target(CANCELLED).event(CUSTOMER_CANCEL);
+
+        transitions.withExternal()
+                .source(REQUEST_CONFIRMATION).target(REVIEW)
+                .event(CUSTOMER_CONFIRM).guard(getEventGuard(CUSTOMER_CONFIRM));
+
+        transitions.withExternal()
+                .source(REQUEST_CONFIRMATION).target(CANCELLED).event(CUSTOMER_CANCEL);
+
+        transitions.withExternal()
+                .source(REVIEW).target(INSTALLATION)
+                .event(APPROVE).guard(getEventGuard(APPROVE));
+
+        transitions.withExternal()
+                .source(REVIEW).target(CANCELLED).event(CUSTOMER_CANCEL);
+
+        transitions.withExternal()
+                .source(REVIEW).target(REJECTED)
+                .event(REJECT).guard(getEventGuard(REJECT));
+
+        transitions.withExternal()
+                .source(REVIEW).target(CANCELLED)
+                .event(CUSTOMER_CANCEL).guard(getEventGuard(CUSTOMER_CANCEL));
+
+        transitions.withExternal()
+                .source(INSTALLATION).target(COMPLETED)
+                .event(INSTALLED).guard(getEventGuard(INSTALLED));
+
+        transitions.withExternal()
+                .source(INSTALLATION).target(CANCELLED).event(CUSTOMER_CANCEL);
+
     }
 
     @Bean
@@ -106,9 +117,7 @@ public class AppStateMachineStateConfig extends EnumStateMachineConfigurerAdapte
                 .findFirst()
                 .orElseGet(() -> new GuardHandler() {
                     @Override
-                    public boolean handle(StateContext<States, Event> context) {
-                        return false;
-                    }
+                    public void handle(StateContext<States, Event> context) {}
 
                     @Override
                     public Event forType() {

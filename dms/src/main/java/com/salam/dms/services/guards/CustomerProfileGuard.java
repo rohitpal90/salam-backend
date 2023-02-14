@@ -10,17 +10,15 @@ import lombok.AllArgsConstructor;
 import org.springframework.statemachine.StateContext;
 import org.springframework.stereotype.Component;
 
-import java.util.Objects;
-
 @Component
 @AllArgsConstructor
-public class CustomerProfileGuard implements GuardHandler {
+public class CustomerProfileGuard extends GuardHandler {
 
     private final PlanService planService;
     private final CustomerService customerService;
 
     @Override
-    public boolean handle(StateContext<States, Event> context) {
+    public void handle(StateContext<States, Event> context) {
         var stateMachine = context.getStateMachine();
         var requestContext = RequestContext.fromStateMachine(stateMachine);
         var metaInfo = requestContext.getMetaInfo();
@@ -35,8 +33,6 @@ public class CustomerProfileGuard implements GuardHandler {
         var customerInfo = metaInfo.getCustomerInfo();
         var verifyResponse = customerService.createPhoneVerifyRequest(customerInfo.getMobile());
         metaInfo.setVerifyBySmsResponse(verifyResponse);
-
-        return Objects.nonNull(requestContext.getMetaInfo().getCustomerInfo());
     }
 
     @Override

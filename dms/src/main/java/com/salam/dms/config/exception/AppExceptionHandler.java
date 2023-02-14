@@ -74,9 +74,6 @@ public class AppExceptionHandler {
 
     private ResponseEntity<?> appErrorToResponseEntity(AppError ex, HttpStatusCode code) {
         Map<Object, Object> map = new HashMap<>();
-        // error code
-        map.put("code", ex.getType().name());
-        // displayable error message
         map.put("message", ex.getMessage());
 
         return ResponseEntity.status(code).body(map);

@@ -5,10 +5,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.support.MessageBuilder;
+import org.springframework.statemachine.ObjectStateMachine;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.StateMachineEventResult;
 import org.springframework.statemachine.config.StateMachineFactory;
+import org.springframework.statemachine.support.AbstractStateMachine;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
@@ -20,6 +22,8 @@ import reactor.core.publisher.Mono;
 public class StateMachineAdapter {
     private final StateMachineFactory<States, Event> stateMachineFactory;
     private final AppStateMachinePersisterDelegate persister;
+
+    private static final String ERROR_KEY = "error";
 
     @SneakyThrows
     public StateMachine<States, Event> restore(RequestContext requestContext) {
@@ -44,9 +48,8 @@ public class StateMachineAdapter {
     public Mono<EventResult> trigger(EventData eventData, RequestContext requestContext) {
         var stateMachine = restore(requestContext);
         var message = eventData.toMessage();
-
         return stateMachine.sendEvent(Mono.just(message))
-                .map(result -> new EventResult(result, RequestContext.fromStateMachine(stateMachine)))
+                .map(result -> new EventResult(result, stateMachine))
                 .next();
     }
 

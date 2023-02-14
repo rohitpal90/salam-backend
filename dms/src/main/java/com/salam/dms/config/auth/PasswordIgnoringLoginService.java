@@ -50,7 +50,12 @@ public class PasswordIgnoringLoginService implements LoginService {
                 throw new BadCredentialsException("Token generation failed");
             }
 
-            return AuthenticationResponse.builder().accessToken(accessToken).build();
+            var refreshToken = jwtTokenService.generateRefreshToken(userDetails);
+
+            return AuthenticationResponse.builder()
+                    .accessToken(accessToken)
+                    .refreshToken(refreshToken)
+                    .build();
         }  else {
             throw new BadCredentialsException("Invalid TOTP or insufficient access rights");
         }

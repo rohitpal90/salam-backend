@@ -4,6 +4,7 @@ import com.salam.dms.adapter.model.Appointment;
 import com.salam.dms.adapter.model.request.AppointmentRequest;
 import com.salam.dms.config.sm.StateMachineAdapter;
 import com.salam.dms.model.Event;
+import com.salam.dms.model.EventResult;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.AppointmentBookRequest;
 import com.salam.dms.services.AppointmentService;
@@ -32,8 +33,8 @@ public class AppointmentController {
     }
 
     @PostMapping("/book")
-    public Object bookAppointment(@RequestBody AppointmentBookRequest request,
-                                  @RequestParam("reqId") RequestContext requestContext) {
+    public EventResult bookAppointment(@RequestBody AppointmentBookRequest request,
+                                       @RequestParam("reqId") RequestContext requestContext) {
         requestContext.setAppointmentBookRequest(request);
         return stateMachineAdapter.trigger(Event.SCHEDULE, requestContext).block();
     }

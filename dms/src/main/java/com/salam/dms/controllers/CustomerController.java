@@ -13,12 +13,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Mono;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/customer")
+@RequestMapping("/customers")
 public class CustomerController {
 
     private final StateMachineAdapter stateMachineAdapter;
@@ -34,9 +33,19 @@ public class CustomerController {
 
     @PostMapping("/verify")
     public EventResult verifyCustomer(@RequestBody VerifyCustomerRequest request,
-                                      @RequestHeader("reqId") RequestContext requestContext) {
+                                      @RequestParam("reqId") RequestContext requestContext) {
         requestContext.setVerifyCustomerRequest(request);
         return stateMachineAdapter.trigger(Event.VERIFY_MOBILE, requestContext).block();
+    }
+
+    @PostMapping("/confirm")
+    public EventResult confirmRequest(@RequestParam("reqId") RequestContext requestContext) {
+        return stateMachineAdapter.trigger(Event.CUSTOMER_CONFIRM, requestContext).block();
+    }
+
+    @PostMapping("/cancel")
+    public EventResult cancelRequest(@RequestParam("reqId") RequestContext requestContext) {
+        return stateMachineAdapter.trigger(Event.CUSTOMER_CANCEL, requestContext).block();
     }
 
 }

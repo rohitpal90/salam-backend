@@ -18,7 +18,7 @@ public interface PlanRepository extends PagingAndSortingRepository<Plan, Long> {
             "((JSON_VALUE(p.meta, '$.category') = :#{#f.category} or (:#{#f.category} is null)) and " +
             "(JSON_VALUE(p.meta, '$.planType') = :#{#f.type} or (:#{#f.type} is null)) and " +
             "(p.id = :#{#f.planId} or (:#{#f.planId} is null))) ", nativeQuery = true)
-    List<Plan> findDealerPlans(Long dealerId, PlanFilterRequest f, Pageable pageable);
+    List<Plan> findDealerPlans(@Param("dealerId") Long dealerId, PlanFilterRequest f, Pageable pageable);
 
     @Query(value = "select case when count(1) > 0 then 'true' else 'false' end from plan p " +
             "join dealer_plan dp on dp.plan_id = p.id " +

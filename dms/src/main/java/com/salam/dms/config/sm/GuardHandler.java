@@ -5,14 +5,26 @@ import com.salam.dms.model.States;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.guard.Guard;
 
-public interface GuardHandler extends Guard<States, Event> {
+public abstract class GuardHandler implements Guard<States, Event> {
 
     @Override
-    public default boolean evaluate(StateContext<States, Event> context) {
-        return handle(context);
+    public boolean evaluate(StateContext<States, Event> context) {
+        try {
+            handle(context);
+            return true;
+        } catch (Exception e) {
+            setContextError(context, e);
+            throw e;
+        }
     }
 
-    boolean handle(StateContext<States, Event> context);
-    Event forType();
+    private void setContextError(StateContext<States, Event> context, Exception error) {
+        context.getStateMachine().setStateMachineError(error);
+        context.getExtendedState().getVariables().put("error", error);
+    }
+
+    public abstract void handle(StateContext<States, Event> context);
+
+    public abstract Event forType();
 
 }

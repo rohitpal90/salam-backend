@@ -5,6 +5,7 @@ import com.salam.dms.model.Event;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.States;
 import com.salam.dms.repos.TransitionRepository;
+import com.salam.dms.services.TransitionService;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,13 +21,13 @@ import org.springframework.transaction.annotation.Transactional;
 public class AppStateMachinePersisterDelegate {
 
     private final StateMachinePersister<States, Event, RequestContext> persister;
-    private final TransitionRepository transitionRepository;
+    private final TransitionService transitionService;
 
     @Autowired
     public AppStateMachinePersisterDelegate(AppStateMachinePersist persist,
-                                            TransitionRepository transitionRepository) {
+                                            TransitionService transitionService) {
         this.persister = new DefaultStateMachinePersister<>(persist);
-        this.transitionRepository = transitionRepository;
+        this.transitionService = transitionService;
     }
 
     @SneakyThrows
@@ -41,24 +42,8 @@ public class AppStateMachinePersisterDelegate {
     public void persist(StateContext<States, Event> stateContext) {
         var stateMachine = stateContext.getStateMachine();
         var requestContext = RequestContext.fromStateMachine(stateMachine);
-        var event = stateContext.getEvent();
 
-        States source = stateContext.getSource().getId();
-        States target = stateContext.getTarget().getId();
-        log.info("State changed from {} to {}", source, target);
-
-        Long requestId = requestContext.getRequestId();
-
-        // TODO: move to transition service
-        var transition = Transition.builder()
-                .name(event)
-                .payload("{}")
-                .requestId(requestId)
-                .from(source)
-                .to(target)
-                .build();
-
-        transitionRepository.save(transition);
+        transitionService.saveTransition(stateContext, requestContext);
         persister.persist(stateMachine, requestContext);
     }
 

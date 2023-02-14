@@ -11,12 +11,16 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+
 @Slf4j
 @AllArgsConstructor
 @Service
 public class RequestService {
 
     private final RequestRepository requestRepository;
+    private static final DateTimeFormatter ORDER_DATE_FMT = DateTimeFormatter.ofPattern("yyMMdd");
 
     public RequestContext initiate(CustomerProfileRequest profileRequest,
                                    PlanInfo planInfo, JwtUser user) {
@@ -28,10 +32,21 @@ public class RequestService {
         request.setState(States.ACCOUNT_CREATION);
         request.setMeta(requestContext.getMetaInfo());
         request.setWorkflowId(1L);
+        request.setDealerId(user.getId());
+        request.setOrderId(generateOrderId(request));
         requestRepository.save(request);
 
         requestContext.setRequestId(request.getId());
+        requestContext.setOrderId(request.getOrderId());
         return requestContext;
     }
+
+    public String generateOrderId(Request request) {
+        var currentOrderCount = requestRepository.countByDealerId(request.getDealerId());
+        var prefix = ZonedDateTime.now().format(ORDER_DATE_FMT);
+
+        return String.format("%s%010d", prefix, currentOrderCount + 1);
+    }
+
 
 }

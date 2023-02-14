@@ -32,7 +32,7 @@ public class UserDetailService implements UserDetailsService {
         JwtUser user = new JwtUser();
         user.setUsername(dealer.getName());
         // load saved otp
-        user.setTotpSecret("1234");
+        user.setTotpSecret(dealer.getTotp());
         user.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
         user.setAccountNonExpired(true);
         user.setAccountNonLocked(true);

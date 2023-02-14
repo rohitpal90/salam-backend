@@ -15,6 +15,7 @@ public class Dealer {
     private Long id;
     private String name;
     private String phone;
+    private String totp;
     private Date createdAt;
     private Date updatedAt;
     private Date deletedAt;

@@ -8,6 +8,8 @@ import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.function.Predicate;
 
+import static com.salam.dms.config.exception.AppErrors.DMS_APP_ERROR;
+
 @Getter
 public class AppError extends RuntimeException {
     private final AppErrors type;

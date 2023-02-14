@@ -19,10 +19,12 @@ public class RequestHeaderConverter implements Converter<String, RequestContext>
 
     @Override
     public RequestContext convert(String requestId) {
-        var request = requestRepository.findById(Long.parseLong(requestId)).orElseThrow();
+        JwtUser actor = Objects.requireNonNull(getPrincipalUser());
+        var request = requestRepository
+                .findByOrderIdAndDealerId(requestId, actor.getId())
+                .orElseThrow();
 
         var requestContext =  RequestContext.fromRequest(request);
-        JwtUser actor = Objects.requireNonNull(getPrincipalUser());
         requestContext.setActor(actor);
 
         return requestContext;
