@@ -31,7 +31,6 @@ public class RequestService {
         var request = new Request();
         request.setState(States.ACCOUNT_CREATION);
         request.setMeta(requestContext.getMetaInfo());
-        request.setWorkflowId(1L);
         request.setDealerId(user.getId());
         request.setOrderId(generateOrderId(request));
         requestRepository.save(request);

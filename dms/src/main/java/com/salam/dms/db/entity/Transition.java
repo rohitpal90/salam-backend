@@ -10,7 +10,6 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="transitions")
 @Builder
 public class Transition {
 

@@ -15,7 +15,6 @@ import java.util.UUID;
 
 @Data
 @Entity
-@Table(name = "requests")
 public class Request {
 
     @Id
@@ -24,9 +23,6 @@ public class Request {
 
     @Enumerated(EnumType.STRING)
     private States state;
-
-    @ColumnDefault("1")
-    private Long workflowId;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
