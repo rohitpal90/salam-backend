@@ -1,0 +1,5 @@
+/.env
+/.env.local
+/dms/target
+/dms/.idea
+/.idea/
