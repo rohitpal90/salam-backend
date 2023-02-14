@@ -1,0 +1,30 @@
+version: '3.8'
+
+volumes:
+  mysql-data:
+
+services:
+  dms-db:
+    image: mysql:latest
+    environment:
+      - MYSQL_DATABASE=${DMS_DB_NAME}
+      - MYSQL_PASSWORD=${DMS_DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DMS_DB_PASSWORD}
+    ports:
+      - 3307:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+  dms-web:
+    build: ./dms
+    environment:
+      - DMS_DB_URL=${DMS_DB_URL}
+      - DMS_DB_USERNAME=${DMS_DB_USERNAME}
+      - DMS_DB_PASSWORD=${DMS_DB_PASSWORD}
+      - TOKEN_USERNAME=${TOKEN_USERNAME}
+      - TOKEN_PASSWORD=${TOKEN_PASSWORD}
+      - PRIV_FILE=${PRIV_FILE}
+      - PUB_FILE=${PUB_FILE}
+    depends_on:
+      - dms-db
+    ports:
+      - 8085:8085
