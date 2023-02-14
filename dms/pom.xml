@@ -20,6 +20,8 @@
         <feign.version>12.1</feign.version>
         <jnit.version>5.9.2</jnit.version>
         <fraho.jwt.security>5.0.3</fraho.jwt.security>
+        <flyway.version>9.14.1</flyway.version>
+        <mysql.version>8.0.32</mysql.version>
     </properties>
     <dependencies>
         <dependency>
@@ -78,6 +80,7 @@
             <artifactId>spring-cloud-starter-openfeign</artifactId>
         </dependency>
 
+
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -124,6 +127,21 @@
                         </exclude>
                     </excludes>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.flywaydb</groupId>
+                <artifactId>flyway-maven-plugin</artifactId>
+                <version>${flyway.version}</version>
+                <configuration>
+                    <configFiles>/src/main/resources/db/flyway.conf</configFiles>
+                </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.flywaydb</groupId>
+                        <artifactId>flyway-mysql</artifactId>
+                        <version>${flyway.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>
