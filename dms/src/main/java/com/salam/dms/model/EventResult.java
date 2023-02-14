@@ -1,7 +1,6 @@
 package com.salam.dms.model;
 
 import com.salam.dms.config.exception.AppError;
-import com.salam.dms.config.exception.AppErrors;
 import com.salam.dms.model.response.ResponseStatus;
 import org.springframework.statemachine.StateMachine;
 import org.springframework.statemachine.StateMachineEventResult;
