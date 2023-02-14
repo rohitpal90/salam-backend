@@ -1,0 +1,23 @@
+package com.salam.dms.db.entity;
+
+import com.salam.dms.adapter.model.PlanMetaInfo;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import lombok.Data;
+import org.hibernate.annotations.Type;
+
+@Data
+@Entity
+@Table(name = "plan")
+public class Plan {
+    @Id
+    private Long id;
+    private String openAccessId;
+    @Type(JsonType.class)
+    @Column(columnDefinition = "json")
+    private PlanMetaInfo meta;
+
+}
