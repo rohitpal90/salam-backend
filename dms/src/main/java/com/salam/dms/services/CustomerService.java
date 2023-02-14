@@ -10,7 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import static com.salam.dms.config.exception.AppErrors.CUSTOMER_OTP_INVALID;
+import static com.salam.dms.config.exception.AppErrors.INVALID_CAPTCHA;
 
 @Slf4j
 @Service
@@ -30,7 +30,7 @@ public class CustomerService {
         var verifyResponse = metaInfo.getVerifyBySmsResponse();
 
         if (!otp.equals(verifyResponse.getCaptchaCode())) {
-            throw AppError.create(CUSTOMER_OTP_INVALID);
+            throw AppError.create(INVALID_CAPTCHA);
         }
 
         return true;
