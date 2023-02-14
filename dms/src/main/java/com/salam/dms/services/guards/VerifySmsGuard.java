@@ -27,7 +27,9 @@ public class VerifySmsGuard extends GuardHandler {
         var verifyCustomerRequest = requestContext.getVerifyCustomerRequest();
 
         String mobileOtp = verifyCustomerRequest.getMobileOtp();
-        customerService.verifyBySms(mobileOtp, requestContext);
+        if (!customerService.verifyBySms(mobileOtp, requestContext)) {
+            throw AppError.create(CUSTOMER_OTP_INVALID);
+        }
 
         requestContext.setVerified(true);
         requestContext.setToStateMachineState(stateMachine);;

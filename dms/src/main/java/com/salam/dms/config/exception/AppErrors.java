@@ -17,7 +17,8 @@ public enum AppErrors implements AppErrorStruct {
     // guard errors
     NO_APPOINTMENTS_FOUND(HttpStatus.BAD_REQUEST, "No appointments found"),
     CUSTOMER_OTP_INVALID(HttpStatus.BAD_REQUEST, "Invalid OTP"),
-    INVALID_STATE(HttpStatus.BAD_REQUEST, "Invalid state");
+    INVALID_STATE(HttpStatus.BAD_REQUEST, "Invalid state"),
+    INVALID_CAPTCHA(HttpStatus.BAD_REQUEST, "Invalid captcha");
 
     private final HttpStatus httpStatus;
     private final String message;
