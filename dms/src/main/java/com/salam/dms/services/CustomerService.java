@@ -3,11 +3,14 @@ package com.salam.dms.services;
 import com.salam.dms.adapter.feign.client.CustomerClient;
 import com.salam.dms.adapter.model.request.VerifySmsRequest;
 import com.salam.dms.adapter.model.response.VerifyBySmsResponse;
+import com.salam.dms.config.exception.AppError;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.CustomerProfileRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import static com.salam.dms.config.exception.AppErrors.INVALID_CAPTCHA;
 
 @Slf4j
 @Service
@@ -26,11 +29,11 @@ public class CustomerService {
         var metaInfo = requestContext.getMetaInfo();
         var verifyResponse = metaInfo.getVerifyBySmsResponse();
 
-        if (otp.equals(verifyResponse.getCaptchaCode())) {
-            return true;
-        } else {
-            throw new RuntimeException("Invalid captcha");
+        if (!otp.equals(verifyResponse.getCaptchaCode())) {
+            throw AppError.create(INVALID_CAPTCHA);
         }
+
+        return true;
     }
 
     public boolean changeCustomerPhone(String mobile, CustomerProfileRequest request,
