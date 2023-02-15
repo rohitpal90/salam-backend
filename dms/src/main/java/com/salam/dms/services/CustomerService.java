@@ -1,6 +1,8 @@
 package com.salam.dms.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.salam.dms.adapter.feign.client.CustomerClient;
+import com.salam.dms.adapter.feign.mock.ClientMockAdapter;
 import com.salam.dms.adapter.model.request.VerifySmsRequest;
 import com.salam.dms.adapter.model.response.VerifyBySmsResponse;
 import com.salam.dms.config.exception.AppError;
@@ -9,6 +11,8 @@ import com.salam.dms.model.request.CustomerProfileRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.Map;
 
 import static com.salam.dms.config.exception.AppErrors.CUSTOMER_OTP_INVALID;
 
@@ -19,10 +23,14 @@ public class CustomerService {
     @Autowired
     CustomerClient customerClient;
 
+    @Autowired
+    ClientMockAdapter clientMockAdapter;
+
 
     public VerifyBySmsResponse createPhoneVerifyRequest(String mobile) {
         var verifyRequest = VerifySmsRequest.createByAccNbr(mobile);
-        return customerClient.verifyBySms(verifyRequest);
+//        return customerClient.verifyBySms(verifyRequest);
+        return clientMockAdapter.getFor("verifysms", new TypeReference<>() {});
     }
 
     public boolean verifyBySms(String otp, RequestContext requestContext) {

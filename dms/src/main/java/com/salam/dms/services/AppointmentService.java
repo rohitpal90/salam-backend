@@ -1,6 +1,9 @@
 package com.salam.dms.services;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JavaType;
 import com.salam.dms.adapter.feign.client.AppointmentClient;
+import com.salam.dms.adapter.feign.mock.ClientMockAdapter;
 import com.salam.dms.adapter.model.Appointment;
 import com.salam.dms.adapter.model.request.AppointmentRequest;
 import com.salam.dms.adapter.model.response.AppointmentResponse;
@@ -24,9 +27,13 @@ public class AppointmentService {
     @Autowired
     AppointmentClient appointmentClient;
 
+    @Autowired
+    ClientMockAdapter clientMockAdapter;
+
 
     public List<Appointment> fetchAppointments(AppointmentRequest request) {
-        AppointmentResponse response = appointmentClient.fetchAppointmentSlots(request);
+        // AppointmentResponse response = appointmentClient.fetchAppointmentSlots(request);
+        AppointmentResponse response = clientMockAdapter.getFor("appointments", new TypeReference<>() { });
         return response.getAppointmentList();
     }
 

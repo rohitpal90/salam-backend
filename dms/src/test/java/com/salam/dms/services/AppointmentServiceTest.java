@@ -3,6 +3,7 @@ package com.salam.dms.services;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salam.dms.adapter.feign.client.AppointmentClient;
+import com.salam.dms.adapter.feign.mock.ClientMockAdapter;
 import com.salam.dms.adapter.model.Appointment;
 import com.salam.dms.adapter.model.request.AppointmentRequest;
 import com.salam.dms.adapter.model.response.AppointmentResponse;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
@@ -25,6 +27,7 @@ import static org.mockito.Mockito.when;
 class AppointmentServiceTest {
 
     @Mock AppointmentClient appointmentClient;
+    @Mock ClientMockAdapter clientMockAdapter;
     @InjectMocks AppointmentService appointmentService;
     @Value("classpath:data/appointments.json")
     Resource appointmentsResource;
@@ -42,6 +45,7 @@ class AppointmentServiceTest {
         var response = new AppointmentResponse();
         response.setAppointmentList(appointments);
         when(appointmentClient.fetchAppointmentSlots(request)).thenReturn(response);
+        when(clientMockAdapter.getFor(Mockito.any(), Mockito.any())).thenReturn(response);
     }
 
     private List<Appointment> loadMockAppointments() {
