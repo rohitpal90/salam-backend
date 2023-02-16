@@ -57,9 +57,8 @@ public class SecurityConfig extends JwtSecurityConfig {
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeHttpRequests(registry -> {
-                    registry.requestMatchers("/auth/login/1").permitAll();
-                    registry.requestMatchers("/auth/login/2").permitAll();
-                    registry.requestMatchers("/auth/refresh").permitAll();
+                    registry.requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll();
+                    registry.requestMatchers("/auth/**").permitAll();
                     registry.anyRequest().authenticated();
                 })
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);
