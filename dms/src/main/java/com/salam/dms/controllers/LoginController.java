@@ -2,6 +2,7 @@ package com.salam.dms.controllers;
 
 import com.salam.dms.model.request.DealerLogin;
 import com.salam.dms.services.DealerService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,7 +19,7 @@ public class LoginController {
     final DealerService dealerService;
 
     @PostMapping("/login/1")
-    public Object checkLogin(@RequestBody DealerLogin login) {
+    public Object checkLogin( @RequestBody  @Valid DealerLogin login) {
         dealerService.performLoginStep1(login);
         return Map.of("message", "success");
     }
