@@ -1,23 +1,26 @@
 package com.salam.dms.model.request;
 
+import com.google.i18n.phonenumbers.NumberParseException;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
+import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber.CountryCodeSource;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
-import lombok.SneakyThrows;
 
 
-
-public class NumberValidator implements ConstraintValidator<MobileValidator,String> {
+public class NumberValidator implements ConstraintValidator<MobileValidator, String> {
 
     PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
+    private static final String DEFAULT_REGION = "SA";
 
 
-    @SneakyThrows
     @Override
     public boolean isValid(String s, ConstraintValidatorContext constraintValidatorContext) {
-        Phonenumber.PhoneNumber phone = phoneNumberUtil.parse(s,
-                Phonenumber.PhoneNumber.CountryCodeSource.UNSPECIFIED.name());
-        return phoneNumberUtil.isValidNumberForRegion(phone,"SA");
+        try {
+            PhoneNumber phone = phoneNumberUtil.parse(s, CountryCodeSource.UNSPECIFIED.name());
+            return phoneNumberUtil.isValidNumberForRegion(phone, DEFAULT_REGION);
+        } catch (NumberParseException e) {
+            return false;
+        }
     }
 }
