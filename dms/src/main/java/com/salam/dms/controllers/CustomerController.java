@@ -9,6 +9,7 @@ import com.salam.dms.model.request.CustomerProfileRequest;
 import com.salam.dms.model.request.VerifyCustomerRequest;
 import com.salam.dms.services.RequestService;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,7 +25,7 @@ public class CustomerController {
     private final RequestService requestService;
 
     @PostMapping
-    public EventResult createCustomerProfile(@RequestBody CustomerProfileRequest profileRequest,
+    public EventResult createCustomerProfile(@RequestBody @Valid CustomerProfileRequest profileRequest,
                                              @AuthenticationPrincipal JwtUser user,
                                              PlanInfo planInfo) {
         var requestContext = requestService.initiate(profileRequest, planInfo, user);
