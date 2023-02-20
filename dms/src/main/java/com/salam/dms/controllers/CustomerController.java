@@ -33,7 +33,7 @@ public class CustomerController {
     }
 
     @PostMapping("/verify")
-    public EventResult verifyCustomer(@RequestBody VerifyCustomerRequest request,
+    public EventResult verifyCustomer(@RequestBody @Valid VerifyCustomerRequest request,
                                       @RequestParam("reqId") RequestContext requestContext) {
         requestContext.setVerifyCustomerRequest(request);
         return stateMachineAdapter.trigger(Event.VERIFY_MOBILE, requestContext).block();

@@ -11,7 +11,7 @@ import java.lang.annotation.*;
 @Target( { ElementType.METHOD, ElementType.FIELD })
 @Retention(RetentionPolicy.RUNTIME)
 public @interface MobileValidator {
-    String message() default "Invalid phone number";
+    String message() default "{com.constraint.MobileValidation.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

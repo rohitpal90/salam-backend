@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class PlanFilterRequest {
-    @NotEmpty(message = "planId is mandatory")
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private Long planId;
-    @NotEmpty(message = "category is mandatory")
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String category;
-    @NotEmpty(message = "type is mandatory")
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String type;
 }

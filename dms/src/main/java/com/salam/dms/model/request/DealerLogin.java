@@ -1,8 +1,7 @@
 package com.salam.dms.model.request;
 
 import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -11,7 +10,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DealerLogin {
-    @NotEmpty(message = "Mobile number is mandatory")
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     @MobileValidator
     private String phone;
 }

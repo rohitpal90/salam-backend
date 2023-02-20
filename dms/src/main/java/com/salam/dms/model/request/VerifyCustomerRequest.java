@@ -7,7 +7,7 @@ import lombok.Data;
 
 @Data
 public class VerifyCustomerRequest {
-    @NotEmpty(message = "mobileOtp cannot be null")
-    @Pattern(regexp = "(^[0-9]{6})",message = "Otp format is wrong")
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
+    @Pattern(regexp = "(^[0-9]{6})",message = "{com.constraint.OtpValidation.message}")
     private String mobileOtp;
 }

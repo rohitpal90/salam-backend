@@ -6,8 +6,8 @@ import lombok.Data;
 
 @Data
 public class AppointmentSlotReq {
-    @NotEmpty(message = "appointmentId is mandatory")
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String appointmentId;
-    @NotEmpty(message = "day is mandatory")
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String day;
 }

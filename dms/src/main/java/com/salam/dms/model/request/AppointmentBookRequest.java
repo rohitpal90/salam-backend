@@ -5,6 +5,6 @@ import lombok.Data;
 
 @Data
 public class AppointmentBookRequest {
-    @NotEmpty(message = "slotId is mandatory")
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String slotId;
 }
