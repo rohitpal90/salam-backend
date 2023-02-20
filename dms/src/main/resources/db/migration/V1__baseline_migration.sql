@@ -88,8 +88,12 @@ CREATE TABLE `transition` (
 -- seed data
 
 INSERT INTO dealer (id,name,phone,created_at,updated_at,deleted_at,totp) VALUES
-	 (1,'Dealer one','+9660501235678','2023-02-01 06:33:27','2023-02-01 06:33:27',NULL,NULL),
-	 (2,'Dealer two','+9660544561234','2023-02-01 06:33:27','2023-02-01 06:33:27',NULL,NULL);
+	 (1,'Dealer one','123456789','2023-02-01 06:33:27','2023-02-01 06:33:27',NULL,NULL),
+	 (2,'Dealer two','987654329','2023-02-01 06:33:27','2023-02-01 06:33:27',NULL,NULL);
+
+-- update Query
+UPDATE dealer set phone = '+9660501235678' where id = 1;
+UPDATE dealer set phone = '+9660544561234' where id = 2;
 
 INSERT INTO plan (id,open_access_id,meta) VALUES
 	 (1903,'9902','{"name": "Fiber Prepaid,240", "price": "1 SAR", "category": "ftth", "planType": "prepaid", "description": "Unlimited, 12 Months + 3 Months free", "uploadSpeed": "60", "downloadSpeed": "240"}'),
