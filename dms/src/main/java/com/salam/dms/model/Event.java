@@ -10,5 +10,6 @@ public enum Event {
     APPROVE,
     INSTALLED,
     REJECT,
+    CHANGE_MOBILE,
     COMPLETE
 }

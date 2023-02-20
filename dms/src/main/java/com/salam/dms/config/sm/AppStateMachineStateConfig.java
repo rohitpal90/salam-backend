@@ -50,6 +50,10 @@ public class AppStateMachineStateConfig extends EnumStateMachineConfigurerAdapte
                     .event(CREATE_ACCOUNT).guard(getEventGuard(CREATE_ACCOUNT));
 
         transitions.withExternal()
+                        .source(MOBILE_VERIFICATION).target(MOBILE_VERIFICATION)
+                        .event(CHANGE_MOBILE).guard(getEventGuard(CHANGE_MOBILE));
+
+        transitions.withExternal()
                 .source(ACCOUNT_CREATION).target(CANCELLED).event(CUSTOMER_CANCEL);
 
         transitions.withExternal()

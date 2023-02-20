@@ -5,6 +5,7 @@ import com.salam.dms.model.Event;
 import com.salam.dms.model.EventResult;
 import com.salam.dms.model.PlanInfo;
 import com.salam.dms.model.RequestContext;
+import com.salam.dms.model.request.CustomerChangePhoneRequest;
 import com.salam.dms.model.request.CustomerProfileRequest;
 import com.salam.dms.model.request.VerifyCustomerRequest;
 import com.salam.dms.services.RequestService;
@@ -30,6 +31,13 @@ public class CustomerController {
                                              PlanInfo planInfo) {
         var requestContext = requestService.initiate(profileRequest, planInfo, user);
         return stateMachineAdapter.trigger(Event.CREATE_ACCOUNT, requestContext).block();
+    }
+
+    @PostMapping("/phone")
+    public EventResult changeMobile(@RequestBody @Valid CustomerChangePhoneRequest request,
+                                    @RequestParam("reqId") RequestContext requestContext) {
+        requestContext.setChangeCustomerPhoneRequest(request);
+        return stateMachineAdapter.trigger(Event.CHANGE_MOBILE, requestContext).block();
     }
 
     @PostMapping("/verify")
