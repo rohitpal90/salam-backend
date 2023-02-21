@@ -30,7 +30,7 @@ public class UserDetailService implements UserDetailsService {
 
     private JwtUser buildJwtUser(Dealer dealer) {
         JwtUser user = new JwtUser();
-        user.setUsername(dealer.getName());
+        user.setUsername(dealer.getPhone());
         // load saved otp
         user.setTotpSecret(dealer.getTotp());
         user.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));

@@ -8,6 +8,7 @@ import com.salam.dms.model.EventResult;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.AppointmentBookRequest;
 import com.salam.dms.services.AppointmentService;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ public class AppointmentController {
     }
 
     @PostMapping("/book")
-    public EventResult bookAppointment(@RequestBody AppointmentBookRequest request,
+    public EventResult bookAppointment( @RequestBody @Valid AppointmentBookRequest request,
                                        @RequestParam("reqId") RequestContext requestContext) {
         requestContext.setAppointmentBookRequest(request);
         return stateMachineAdapter.trigger(Event.SCHEDULE, requestContext).block();
