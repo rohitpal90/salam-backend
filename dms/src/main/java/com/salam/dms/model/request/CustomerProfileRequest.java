@@ -17,7 +17,6 @@ public class CustomerProfileRequest {
     @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String odbPlateNumber;
     @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
-    @Pattern(regexp = "^(0?[1-9]|[12][0-9]|3[01])-(0?[1-9]|1[012])-[0-9]{4}$",
-    message = "{com.constraint.DateValidation.message}")
+    @DateValidator
     private String dob;
 }
