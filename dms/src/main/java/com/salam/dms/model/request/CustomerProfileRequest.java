@@ -1,10 +1,10 @@
 package com.salam.dms.model.request;
 
 
+import com.salam.dms.model.validators.ValidDate;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
-import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 public class CustomerProfileRequest {
@@ -17,6 +17,6 @@ public class CustomerProfileRequest {
     @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String odbPlateNumber;
     @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
-    @DateValidator
+    @ValidDate(pattern = "dd-MM-yyyy", checkPast = true)
     private String dob;
 }

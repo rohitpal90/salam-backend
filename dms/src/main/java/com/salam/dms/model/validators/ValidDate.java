@@ -1,4 +1,4 @@
-package com.salam.dms.model.request;
+package com.salam.dms.model.validators;
 
 import jakarta.validation.Constraint;
 import jakarta.validation.Payload;
@@ -6,11 +6,13 @@ import jakarta.validation.Payload;
 import java.lang.annotation.*;
 
 @Documented
-@Constraint(validatedBy = DatValidator.class)
-@Target( { ElementType.METHOD, ElementType.FIELD })
+@Constraint(validatedBy = DateValidator.class)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DateValidator {
+public @interface ValidDate {
     String message() default "{com.constraint.DateValidation.message}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
+    String pattern() default "dd/MM/yyyy";
+    boolean checkPast()  default false;
 }
