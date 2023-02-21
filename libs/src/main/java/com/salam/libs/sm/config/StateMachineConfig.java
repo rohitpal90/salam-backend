@@ -12,12 +12,14 @@ import org.springframework.statemachine.config.builders.StateMachineTransitionCo
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 
 @Configuration
 @EnableStateMachineFactory
 public class StateMachineConfig extends StateMachineConfigurerAdapter<String, String> {
+
+    @Autowired
+    WorkflowProperties wfProps;
 
     @Autowired
     StateChangeListener listener;
@@ -35,21 +37,19 @@ public class StateMachineConfig extends StateMachineConfigurerAdapter<String, St
 
     @Override
     public void configure(StateMachineTransitionConfigurer<String, String> transitions) throws Exception {
-        transitions.withExternal()
-                .source("TEST1").target("TEST2")
-                .event("EVENT1").guard(getEventGuard("EVENT1"));
-
-        transitions.withExternal()
-                .source("TEST3").target("TEST4")
-                .event("EVENT2").guard(getEventGuard("EVENT2"));
+        for (WorkflowProperties.Transition transition : wfProps.getTransitions()) {
+            transitions.withExternal()
+                    .source(transition.getSource()).target(transition.getTarget())
+                    .event(transition.getEvent()).guard(getEventGuard(transition.getEvent()));
+        }
     }
 
     @Override
     public void configure(StateMachineStateConfigurer<String, String> states) throws Exception {
         states
                 .withStates()
-                .initial("TEST1")
-                .states(Set.of("TEST1", "TEST2", "TEST3", "TEST4"));
+                .initial(wfProps.getInitialState())
+                .states(wfProps.getStates());
     }
 
     private GuardHandler getEventGuard(String event) {
