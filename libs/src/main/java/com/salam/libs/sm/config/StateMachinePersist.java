@@ -2,13 +2,11 @@ package com.salam.libs.sm.config;
 
 import com.salam.libs.sm.entity.Request;
 import com.salam.libs.sm.model.RequestContext;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.TypedQuery;
+import jakarta.persistence.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.ExtendedState;
 import org.springframework.statemachine.StateMachineContext;
-import org.springframework.statemachine.StateMachinePersist;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
@@ -19,21 +17,18 @@ import java.util.Optional;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class AppStateMachinePersist implements StateMachinePersist<String, String, RequestContext> {
+public class StateMachinePersist implements org.springframework.statemachine.StateMachinePersist<String, String, RequestContext> {
 
-    private final EntityManager entityManager;
+    @PersistenceContext
+    EntityManager entityManager;
+
 
     private Optional<Request> getRequestById(Long requestId) {
         TypedQuery<Request> query = entityManager.createQuery("from Request r where r.id = :requestId",
                 Request.class);
         query.setParameter("requestId", requestId);
 
-        List<Request> requests = query.getResultList();
-        if (requests.size() == 0) {
-            return Optional.empty();
-        }
-
-        return Optional.of(requests.get(0));
+        return query.getResultList().stream().findFirst();
     }
 
     @Override

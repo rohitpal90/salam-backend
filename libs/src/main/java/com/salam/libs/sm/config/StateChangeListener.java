@@ -12,14 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @RequiredArgsConstructor
 @Service
-public class AppStateChangeListener extends StateMachineListenerAdapter<String, String> {
+public class StateChangeListener extends StateMachineListenerAdapter<String, String> {
 
-    private final AppStateMachinePersisterDelegate persister;
+    private final StateMachinePersisterDelegate persister;
 
 
     @Override
     public void eventNotAccepted(Message<String> event) {
-        log.error("Event not : {}", event.getPayload());
+        log.error("Event not accepted: {}", event.getPayload());
     }
 
     @Override

@@ -21,13 +21,13 @@ public abstract class RequestContext {
 
     public static <T extends RequestContext> T fromStateMachine(StateMachine<String, String> stateMachine) {
         var variables = stateMachine.getExtendedState().getVariables();
-        var reqContext = ((T) variables.get(KEY));
+        var reqContext = variables.get(KEY);
 
         if (variables.containsKey(ERROR_KEY)) {
-            reqContext.setCurrentError((Exception) variables.get(ERROR_KEY));
+            ((RequestContext) reqContext).setCurrentError((Exception) variables.get(ERROR_KEY));
         }
 
-        return reqContext;
+        return ((T) reqContext);
     }
 
     public void setToStateMachineState(StateMachine<String, String> stateMachine) {

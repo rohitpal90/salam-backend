@@ -18,7 +18,7 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class StateMachineAdapter {
     private final StateMachineFactory<String, String> stateMachineFactory;
-    private final AppStateMachinePersisterDelegate persister;
+    private final StateMachinePersisterDelegate persister;
 
     @SneakyThrows
     public StateMachine<String, String> restore(RequestContext requestContext) {

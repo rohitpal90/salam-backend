@@ -4,11 +4,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class AppStateMachineConfig {
+public class StateMachineListenerConfig {
 
     @Bean
-    public AppStateChangeListener listener(AppStateMachinePersisterDelegate persister) {
-        return new AppStateChangeListener(persister);
+    public StateChangeListener listener(StateMachinePersisterDelegate persister) {
+        return new StateChangeListener(persister);
     }
 
 }

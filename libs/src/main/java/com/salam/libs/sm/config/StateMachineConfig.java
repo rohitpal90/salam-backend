@@ -9,17 +9,20 @@ import org.springframework.statemachine.config.builders.StateMachineConfiguratio
 import org.springframework.statemachine.config.builders.StateMachineStateConfigurer;
 import org.springframework.statemachine.config.builders.StateMachineTransitionConfigurer;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 
 @Configuration
 @EnableStateMachineFactory
-public class AppStateMachineStateConfig extends StateMachineConfigurerAdapter<String, String> {
+public class StateMachineConfig extends StateMachineConfigurerAdapter<String, String> {
 
     @Autowired
-    AppStateChangeListener listener;
+    StateChangeListener listener;
 
-    @Autowired
+    @Autowired(required = false)
     List<? extends GuardHandler> guardHandlers;
 
 
@@ -31,18 +34,28 @@ public class AppStateMachineStateConfig extends StateMachineConfigurerAdapter<St
     }
 
     @Override
-    public void configure(StateMachineTransitionConfigurer<String, String> transitions)
-            throws Exception {
-        // read for properties
+    public void configure(StateMachineTransitionConfigurer<String, String> transitions) throws Exception {
+        transitions.withExternal()
+                .source("TEST1").target("TEST2")
+                .event("EVENT1").guard(getEventGuard("EVENT1"));
+
+        transitions.withExternal()
+                .source("TEST3").target("TEST4")
+                .event("EVENT2").guard(getEventGuard("EVENT2"));
     }
 
     @Override
     public void configure(StateMachineStateConfigurer<String, String> states) throws Exception {
-        // read all states
+        states
+                .withStates()
+                .initial("TEST1")
+                .states(Set.of("TEST1", "TEST2", "TEST3", "TEST4"));
     }
 
     private GuardHandler getEventGuard(String event) {
-        return this.guardHandlers.stream()
+        return Optional.ofNullable(this.guardHandlers)
+                .orElseGet(Collections::emptyList)
+                .stream()
                 .filter(it -> it.forType().equals(event))
                 .map(GuardHandler.class::cast)
                 .findFirst()

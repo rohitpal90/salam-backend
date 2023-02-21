@@ -15,7 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
-public class AppStateMachinePersisterDelegate {
+public class StateMachinePersisterDelegate {
 
     private final StateMachinePersister<String, String, RequestContext> persister;
     private final EntityManager entityManager;
@@ -41,7 +41,7 @@ public class AppStateMachinePersisterDelegate {
     }
 
     @Autowired
-    public AppStateMachinePersisterDelegate(AppStateMachinePersist persist, EntityManager entityManager) {
+    public StateMachinePersisterDelegate(StateMachinePersist persist, EntityManager entityManager) {
         this.persister = new DefaultStateMachinePersister<>(persist);
         this.entityManager = entityManager;
     }

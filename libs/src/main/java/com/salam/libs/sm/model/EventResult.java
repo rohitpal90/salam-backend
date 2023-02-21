@@ -19,7 +19,7 @@ public class EventResult {
         this.result = result;
     }
 
-    public boolean isDeniedOrDeferred(StateMachineEventResult<String, String> result) {
+    public boolean isDeniedOrDeferred() {
         var resultType = result.getResultType();
         return List.of(DEFERRED, DENIED).contains(resultType);
     }
