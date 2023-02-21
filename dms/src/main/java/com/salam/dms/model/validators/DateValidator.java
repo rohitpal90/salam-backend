@@ -23,8 +23,15 @@ public class DateValidator implements ConstraintValidator<ValidDate, String> {
     public boolean isValid(String date, ConstraintValidatorContext context) {
         try {
             var parsedDate = validateDate(date);
-            return Objects.nonNull(parsedDate) &&
-                    (checkPast && isPastDate(parsedDate));
+            if (!Objects.nonNull(parsedDate)) {
+                return false;
+            }
+
+            if (checkPast && !isPastDate(parsedDate)) {
+                return false;
+            }
+
+            return true;
         } catch (Exception e) {
             return false;
         }
