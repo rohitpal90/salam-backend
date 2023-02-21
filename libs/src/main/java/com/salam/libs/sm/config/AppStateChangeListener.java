@@ -16,6 +16,7 @@ public class AppStateChangeListener extends StateMachineListenerAdapter<String, 
 
     private final AppStateMachinePersisterDelegate persister;
 
+
     @Override
     public void eventNotAccepted(Message<String> event) {
         log.error("Event not : {}", event.getPayload());

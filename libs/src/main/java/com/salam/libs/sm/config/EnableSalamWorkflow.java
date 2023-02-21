@@ -10,5 +10,5 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import(AppStateMachineStateConfig.class)
-public @interface EnableSalamWorkflows {
+public @interface EnableSalamWorkflow {
 }

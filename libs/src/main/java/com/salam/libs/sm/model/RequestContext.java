@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.salam.libs.sm.entity.Request;
 import org.springframework.statemachine.StateMachine;
 
-public class RequestContext {
+public abstract class RequestContext {
     private Long requestId;
     private String orderId;
     private JsonNode meta;
@@ -19,14 +19,9 @@ public class RequestContext {
         this.meta = request.getMeta();
     }
 
-
-    public static RequestContext fromRequest(Request request) {
-        return new RequestContext(request);
-    }
-
-    public static RequestContext fromStateMachine(StateMachine<String, String> stateMachine) {
+    public static <T extends RequestContext> T fromStateMachine(StateMachine<String, String> stateMachine) {
         var variables = stateMachine.getExtendedState().getVariables();
-        var reqContext = ((RequestContext) variables.get(KEY));
+        var reqContext = ((T) variables.get(KEY));
 
         if (variables.containsKey(ERROR_KEY)) {
             reqContext.setCurrentError((Exception) variables.get(ERROR_KEY));
