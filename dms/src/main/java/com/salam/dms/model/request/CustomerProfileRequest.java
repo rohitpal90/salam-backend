@@ -1,6 +1,7 @@
 package com.salam.dms.model.request;
 
 
+import com.salam.dms.model.validators.ValidDate;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
@@ -15,4 +16,7 @@ public class CustomerProfileRequest {
     private String mobile;
     @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String odbPlateNumber;
+    @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
+    @ValidDate(pattern = "dd-MM-yyyy", checkPast = true)
+    private String dob;
 }
