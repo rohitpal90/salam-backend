@@ -4,6 +4,6 @@ transitions:
   - source: TEST1
     target: TEST2
     event: EVENT1
-  - source: TEST3
-    target: TEST4
+  - source: TEST2
+    target: TEST3
     event: EVENT2

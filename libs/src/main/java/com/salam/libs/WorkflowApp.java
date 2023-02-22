@@ -1,12 +1,13 @@
 package com.salam.libs;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.salam.libs.annotations.EnableSalamWorkflow;
+import com.salam.libs.exceptions.RequestNotFoundException;
 import com.salam.libs.sm.config.GuardHandler;
 import com.salam.libs.sm.config.StateMachineAdapter;
-import com.salam.libs.sm.entity.Request;
-import com.salam.libs.sm.model.EventResult;
 import com.salam.libs.sm.model.RequestContext;
 import com.salam.libs.sm.model.TestOrderRequest;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -38,16 +39,31 @@ public class WorkflowApp implements CommandLineRunner {
     }
 
 
+    @Setter @Getter
     static class OrderContext extends RequestContext {
 
-        @Setter
-        @Getter
         private TestOrderRequest testOrderRequest;
+        private MyMeta metaInfo;
 
 
-        public OrderContext(Request request) {
-            super(request);
+        public OrderContext(String orderId, MyMeta metaInfo) {
+            super(orderId);
+            this.metaInfo = metaInfo;
         }
+
+        public OrderContext(String orderId) {
+            super(orderId);
+        }
+
+        @Override
+        public JsonNode getMeta() {
+            return getMapper().convertValue(metaInfo, JsonNode.class);
+        }
+    }
+
+    @Data
+    static class MyMeta {
+        private String value;
     }
 
     @Autowired
@@ -60,13 +76,14 @@ public class WorkflowApp implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        var request = new Request();
-        request.setId(1L);
-        request.setState("TEST1");
-        request.setOrderId("ORD00001");
+        String newOrderId = "ORD0004";
+        var meta = new MyMeta();
+        meta.setValue("TEST");
 
-        var orderContext = new OrderContext(request);
-        EventResult result = stateMachineAdapter.trigger("EVENT1", orderContext).block();
-        System.out.println(result);
+        var requestContext = new OrderContext(newOrderId);
+        requestContext.setMetaInfo(meta);
+
+        var result1 = stateMachineAdapter.trigger("EVENT2", requestContext).block();
+        System.out.println(result1);
     }
 }

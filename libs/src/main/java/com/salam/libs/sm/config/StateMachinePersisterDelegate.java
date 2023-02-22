@@ -1,5 +1,6 @@
 package com.salam.libs.sm.config;
 
+import com.salam.libs.sm.entity.Request;
 import com.salam.libs.sm.entity.Transition;
 import com.salam.libs.sm.model.RequestContext;
 import jakarta.persistence.EntityManager;
@@ -67,5 +68,10 @@ public class StateMachinePersisterDelegate {
     public StateMachine<String, String> restore(StateMachine<String, String> stateMachine,
                                                RequestContext requestContext) {
         return persister.restore(stateMachine, requestContext);
+    }
+
+    @Transactional
+    public Request createNew(Request request) {
+        return entityManager.merge(request);
     }
 }

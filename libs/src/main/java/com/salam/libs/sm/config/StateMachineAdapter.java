@@ -1,5 +1,6 @@
 package com.salam.libs.sm.config;
 
+import com.salam.libs.sm.entity.Request;
 import com.salam.libs.sm.model.EventData;
 import com.salam.libs.sm.model.EventResult;
 import com.salam.libs.sm.model.RequestContext;
@@ -19,13 +20,11 @@ import reactor.core.publisher.Mono;
 public class StateMachineAdapter {
     private final StateMachineFactory<String, String> stateMachineFactory;
     private final StateMachinePersisterDelegate persister;
+    private final WorkflowProperties workflowProperties;
 
     @SneakyThrows
     public StateMachine<String, String> restore(RequestContext requestContext) {
-        var stateMachine = stateMachineFactory.getStateMachine();
-        requestContext.setToStateMachineState(stateMachine);
-
-        return persister.restore(stateMachine, requestContext);
+        return persister.restore(stateMachineFactory.getStateMachine(), requestContext);
     }
 
     @Transactional
@@ -52,11 +51,19 @@ public class StateMachineAdapter {
         return trigger(new EventData(event), requestContext);
     }
 
-    public StateMachine<String, String> create() {
-        var stateMachine = stateMachineFactory.getStateMachine();
-        stateMachine.startReactively();
+    @SneakyThrows
+    @Transactional
+    public <T extends RequestContext> T newRequest(T reqContext) {
+        var request = new Request();
+        request.setState(workflowProperties.getInitialState());
+        request.setMeta(reqContext.getMeta());
+        request.setOrderId(reqContext.getOrderId());
+        request = persister.createNew(request);
 
-        return stateMachine;
+        reqContext.setRequestId(request.getId());
+        reqContext.setOrderId(request.getOrderId());
+
+        return reqContext;
     }
 
 }

@@ -25,9 +25,6 @@ public class Request {
     private JsonNode meta;
 
     @Column(updatable = false)
-    private Long dealerId;
-
-    @Column(updatable = false)
     private String orderId;
 
     @CreatedDate
