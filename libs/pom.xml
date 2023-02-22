@@ -10,7 +10,9 @@
         <relativePath/>
     </parent>
 
+    <groupId>com.salam</groupId>
     <artifactId>libs</artifactId>
+    <version>1.0.0</version>
 
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
