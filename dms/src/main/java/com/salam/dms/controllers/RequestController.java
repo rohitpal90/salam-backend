@@ -17,7 +17,7 @@ public class RequestController {
         var metaInfo = requestContext.getMetaInfo();
         return new HashMap<String, Object>() {
             {
-                put("reqId", requestContext.getRequestId());
+                put("reqId", requestContext.getOrderId());
                 put("customerInfo", metaInfo.getCustomerInfo());
                 put("plan", metaInfo.getPlanInfo());
                 put("appointment", metaInfo.getAppointment());
