@@ -9,6 +9,6 @@ import java.util.Optional;
 @Repository
 public interface RequestRepository extends JpaRepository<Request, Long> {
     Optional<Request> findByOrderId(String orderId);
-    Optional<Request> findByOrderIdAndDealerId(String orderId, Long dealerId);
-    Long countByDealerId(Long dealerId);
+    Optional<Request> findByOrderIdAndUserId(String orderId, Long userId);
+    Long countByUserId(Long dealerId);
 }

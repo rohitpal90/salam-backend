@@ -1,91 +1,57 @@
 package com.salam.dms.services;
 
-import com.google.i18n.phonenumbers.NumberParseException;
-import com.google.i18n.phonenumbers.PhoneNumberUtil;
-import com.google.i18n.phonenumbers.Phonenumber.PhoneNumber;
+import com.salam.dms.config.auth.OtpService;
 import com.salam.dms.config.exception.AppError;
 import com.salam.dms.db.entity.User;
-import com.salam.dms.model.request.DealerEmailLogin;
+import com.salam.dms.model.request.PhoneNumberValidator;
 import com.salam.dms.repos.UserRepository;
-import eu.fraho.spring.securityJwt.base.service.TotpService;
-import org.springframework.beans.factory.annotation.Autowired;
+import eu.fraho.spring.securityJwt.base.dto.AuthenticationRequest;
+import lombok.AllArgsConstructor;
+import org.apache.commons.codec.binary.Base32;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.validation.Validator;
 
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
-import static com.salam.dms.config.exception.AppErrors.*;
+import static com.salam.dms.config.exception.AppErrors.USER_NOT_FOUND;
 
 @Service
+@AllArgsConstructor
 public class UserService {
-
-    PhoneNumberUtil phoneNumberUtil = PhoneNumberUtil.getInstance();
-
-    @Autowired
-    UserRepository userRepository;
-    @Autowired
-    TotpService totpService;
-
-    private static final String DEFAULT_REGION = "SA";
+    final UserRepository userRepository;
+    final OtpService otpService;
+    final Validator validator;
+    private final Base32 base32 = new Base32();
 
 
-    public Optional<User> checkLogin(String username) throws NumberParseException {
-        String email = null;
-        String phoneNo = null;
-        if(isMobileNo(username)){
-            PhoneNumber phone = phoneNumberUtil.parse(username, PhoneNumber.CountryCodeSource.UNSPECIFIED.name());
-            boolean isPhoneNumber = phoneNumberUtil.isValidNumberForRegion(phone, DEFAULT_REGION);
-            if(isPhoneNumber) {
-                phoneNo = username;
-            }
-            else{
-                throw AppError.create(NUMBER_FORMAT_ERROR);
-            }
-        }
-        else{
-            if(isValidEmail(username)) {
-                email = username;
-            }
-            else{
-                throw AppError.create(INVALID_EMAIL);
-            }
-        }
-        System.out.println(phoneNo);
-        System.out.println(userRepository.findByEmail(email,phoneNo));
-        return userRepository.findByEmail(email,phoneNo);
+    public Optional<User> checkLogin(String username) {
+        return userRepository.findUserByPrincipal(username);
     }
 
-    private boolean isValidEmail(String username) {
-        String  regexPattern = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
-        Pattern pattern = Pattern.compile(regexPattern);
-        Matcher matcher = pattern.matcher(username);
-        return matcher.matches();
+    public boolean isPhoneLogin(String username) {
+        return PhoneNumberValidator.isValidPhone(username);
     }
 
-    private boolean isMobileNo(String str) {
-        int len = str.length();
-        for (int i = 1; i < len; i++) {
-            if (!Character.isDigit(str.charAt(i))) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public void LoginCheck(DealerEmailLogin login) throws NumberParseException {
-        var userOpt = this.checkLogin(login.getUsername());
+    @Transactional
+    public void performLoginStep1(AuthenticationRequest request) {
+        var username = request.getUsername();
+        var userOpt = this.checkLogin(username);
         if (userOpt.isEmpty()) {
             throw AppError.create(USER_NOT_FOUND);
         }
 
-        var user = userOpt.get();
-        System.out.print(totpService.generateSecret());
-        int randomPin   =(int)(Math.random()*900000)+100000;
-        user.setTotp(String.valueOf(randomPin));
-        //dealer.setTotp("1234");
+        if (isPhoneLogin(username)) {
+            var secret = otpService.generateSecret();
+            String totp = otpService.generateCode(secret);
+            // send otp to phone
 
-        userRepository.save(user);
+            var user = userOpt.get();
+
+            // OTP: 8720
+            // TODO: change this
+            user.setTotp("LJLDNVG4JZREUHWJXENUS37F5ADXOZJG");
+            userRepository.save(user);
+        }
     }
-
 }

@@ -1,19 +1,12 @@
 package com.salam.dms.config.auth;
 
-import com.salam.dms.db.entity.Dealer;
 import com.salam.dms.db.entity.Role;
 import com.salam.dms.db.entity.User;
-import com.salam.dms.db.entity.UserRole;
-import com.salam.dms.model.request.DealerEmailLogin;
-import com.salam.dms.model.request.DealerLogin;
-import com.salam.dms.repos.RoleRepository;
-import com.salam.dms.repos.UserRoleRepository;
-import com.salam.dms.services.DealerService;
 import com.salam.dms.services.UserService;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.context.annotation.Primary;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -21,15 +14,17 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+
+import static org.apache.commons.lang3.ObjectUtils.firstNonNull;
 
 @Component
 @RequiredArgsConstructor
 public class UserDetailService implements UserDetailsService {
 
     private final UserService userService;
-    private final UserRoleRepository userRoleRepository;
-    private final RoleRepository roleRepository;
 
     @SneakyThrows
     @Override
@@ -41,23 +36,27 @@ public class UserDetailService implements UserDetailsService {
     }
 
     private JwtUser buildJwtUser(User user) {
-        JwtUser jwtUser = new JwtUser();
-        jwtUser.setUsername(user.getEmail());
+        var jwtUser = new JwtUser();
+        jwtUser.setUsername(firstNonNull(user.getEmail(), user.getPhone()));
         jwtUser.setPassword(user.getPassword());
-        // load saved otp
-        UserRole roleId = userRoleRepository.findByUserId(user.getId());
-        Role role = roleRepository.findByRole(roleId.getRoleId());
         jwtUser.setTotpSecret(user.getTotp());
-        jwtUser.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority(role.getRole())));
-        jwtUser.setAccountNonExpired(true);
-        jwtUser.setAccountNonLocked(true);
-        jwtUser.setApiAccessAllowed(true);
-        jwtUser.setCredentialsNonExpired(true);
-        jwtUser.setEnabled(true);
+        jwtUser.setAuthorities(mapRolesToAuthorities(user.getRoles()));
+        jwtUser.setAccountNonExpired(user.isActive());
+        jwtUser.setAccountNonLocked(user.isActive());
+        jwtUser.setApiAccessAllowed(user.isActive());
+        jwtUser.setCredentialsNonExpired(user.isActive());
+        jwtUser.setEnabled(user.isActive());
         jwtUser.setId(user.getId());
 
-
         return jwtUser;
+    }
+
+    private static List<GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
+        return Optional.ofNullable(roles)
+                .map(rs -> rs.stream()
+                        .map(role -> (GrantedAuthority) new SimpleGrantedAuthority(role.getRole()))
+                        .toList())
+                .orElse(Collections.emptyList());
     }
 
 

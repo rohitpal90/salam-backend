@@ -3,6 +3,7 @@ package com.salam.dms.config;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.Resource;
 
@@ -15,6 +16,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import static java.util.Objects.requireNonNull;
 
 @Configuration
+@ComponentScan("dev.samstevens.totp.spring.autoconfigure")
 @EnableFeignClients
 public class AppConfig {
 
