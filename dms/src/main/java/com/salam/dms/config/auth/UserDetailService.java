@@ -1,10 +1,19 @@
 package com.salam.dms.config.auth;
 
 import com.salam.dms.db.entity.Dealer;
+import com.salam.dms.db.entity.Role;
+import com.salam.dms.db.entity.User;
+import com.salam.dms.db.entity.UserRole;
+import com.salam.dms.model.request.DealerEmailLogin;
 import com.salam.dms.model.request.DealerLogin;
+import com.salam.dms.repos.RoleRepository;
+import com.salam.dms.repos.UserRoleRepository;
 import com.salam.dms.services.DealerService;
+import com.salam.dms.services.UserService;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,30 +27,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserDetailService implements UserDetailsService {
 
-    private final DealerService dealerService;
+    private final UserService userService;
+    private final UserRoleRepository userRoleRepository;
+    private final RoleRepository roleRepository;
 
+    @SneakyThrows
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Optional<Dealer> result = dealerService.checkLogin(new DealerLogin(username));
+        Optional<User> result = userService.checkLogin(username);
         return result
                 .map(this::buildJwtUser)
                 .orElseThrow(() -> new UsernameNotFoundException(username));
     }
 
-    private JwtUser buildJwtUser(Dealer dealer) {
-        JwtUser user = new JwtUser();
-        user.setUsername(dealer.getPhone());
+    private JwtUser buildJwtUser(User user) {
+        JwtUser jwtUser = new JwtUser();
+        jwtUser.setUsername(user.getEmail());
+        jwtUser.setPassword(user.getPassword());
         // load saved otp
-        user.setTotpSecret(dealer.getTotp());
-        user.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER")));
-        user.setAccountNonExpired(true);
-        user.setAccountNonLocked(true);
-        user.setApiAccessAllowed(true);
-        user.setCredentialsNonExpired(true);
-        user.setEnabled(true);
-        user.setId(dealer.getId());
+        UserRole roleId = userRoleRepository.findByUserId(user.getId());
+        Role role = roleRepository.findByRole(roleId.getRoleId());
+        jwtUser.setTotpSecret(user.getTotp());
+        jwtUser.setAuthorities(Collections.singletonList(new SimpleGrantedAuthority(role.getRole())));
+        jwtUser.setAccountNonExpired(true);
+        jwtUser.setAccountNonLocked(true);
+        jwtUser.setApiAccessAllowed(true);
+        jwtUser.setCredentialsNonExpired(true);
+        jwtUser.setEnabled(true);
+        jwtUser.setId(user.getId());
 
-        return user;
+
+        return jwtUser;
     }
+
 
 }
