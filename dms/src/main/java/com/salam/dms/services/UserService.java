@@ -7,7 +7,6 @@ import com.salam.dms.model.request.PhoneNumberValidator;
 import com.salam.dms.repos.UserRepository;
 import eu.fraho.spring.securityJwt.base.dto.AuthenticationRequest;
 import lombok.AllArgsConstructor;
-import org.apache.commons.codec.binary.Base32;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
@@ -22,7 +21,6 @@ public class UserService {
     final UserRepository userRepository;
     final OtpService otpService;
     final Validator validator;
-    private final Base32 base32 = new Base32();
 
 
     public Optional<User> checkLogin(String username) {

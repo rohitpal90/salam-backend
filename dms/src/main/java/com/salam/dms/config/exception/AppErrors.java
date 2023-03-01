@@ -14,9 +14,6 @@ public enum AppErrors implements AppErrorStruct {
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not found"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "Request not found"),
-    NUMBER_FORMAT_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Number format error"),
-    INVALID_EMAIL(HttpStatus.INTERNAL_SERVER_ERROR, "Email format error"),
-    INVALID_EMAIL_PASSWORD(HttpStatus.INTERNAL_SERVER_ERROR, "Invalid Email or Password"),
     BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid otp or insufficient access rights"),
     // guard errors
     NO_APPOINTMENTS_FOUND(HttpStatus.BAD_REQUEST, "No appointments found"),
