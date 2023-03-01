@@ -7,6 +7,7 @@ import com.salam.dms.model.request.PhoneNumberValidator;
 import com.salam.dms.repos.UserRepository;
 import eu.fraho.spring.securityJwt.base.dto.AuthenticationRequest;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.Validator;
@@ -15,6 +16,7 @@ import java.util.Optional;
 
 import static com.salam.dms.config.exception.AppErrors.USER_NOT_FOUND;
 
+@Slf4j
 @Service
 @AllArgsConstructor
 public class UserService {
@@ -42,13 +44,13 @@ public class UserService {
         if (isPhoneLogin(username)) {
             var secret = otpService.generateSecret();
             String totp = otpService.generateCode(secret);
-            // send otp to phone
+            // send totp to phone
 
             var user = userOpt.get();
 
-            // OTP: 8720
-            // TODO: change this
-            user.setTotp("LJLDNVG4JZREUHWJXENUS37F5ADXOZJG");
+            // TODO: remove this
+            log.info("generated token for {}: {}", username, totp);
+            user.setTotp(secret);
             userRepository.save(user);
         }
     }
