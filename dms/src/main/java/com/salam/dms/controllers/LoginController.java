@@ -20,7 +20,7 @@ public class LoginController {
 
 
     @PostMapping("/login/1")
-    public Object checkEmailLogin(@RequestBody @Valid AuthenticationRequest request) {
+    public Object checkLogin(@RequestBody @Valid AuthenticationRequest request) {
         userService.performLoginStep1(request);
         return Map.of("message", "success");
     }
