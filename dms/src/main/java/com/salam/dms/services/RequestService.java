@@ -31,7 +31,7 @@ public class RequestService {
         var request = new Request();
         request.setState(States.ACCOUNT_CREATION);
         request.setMeta(requestContext.getMetaInfo());
-        request.setDealerId(user.getId());
+        request.setUserId(user.getId());
         request.setOrderId(generateOrderId(request));
         requestRepository.save(request);
 
@@ -41,7 +41,7 @@ public class RequestService {
     }
 
     public String generateOrderId(Request request) {
-        var currentOrderCount = requestRepository.countByDealerId(request.getDealerId());
+        var currentOrderCount = requestRepository.countByUserId(request.getUserId());
         var prefix = ZonedDateTime.now().format(ORDER_DATE_FMT);
 
         return String.format("%s%010d", prefix, currentOrderCount + 1);

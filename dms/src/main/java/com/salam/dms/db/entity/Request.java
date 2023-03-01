@@ -5,13 +5,11 @@ import com.salam.dms.model.States;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Type;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 
 import java.util.Date;
-import java.util.UUID;
 
 @Data
 @Entity
@@ -29,7 +27,7 @@ public class Request {
     private RequestMetaInfo meta;
 
     @Column(updatable = false)
-    private Long dealerId;
+    private Long userId;
 
     @Column(updatable = false)
     private String orderId;
