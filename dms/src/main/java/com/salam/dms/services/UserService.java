@@ -47,9 +47,6 @@ public class UserService {
             // send totp to phone
 
             var user = userOpt.get();
-
-            // TODO: remove this
-            log.info("generated token for {}: {}", username, totp);
             user.setTotp(secret);
             userRepository.save(user);
         }
