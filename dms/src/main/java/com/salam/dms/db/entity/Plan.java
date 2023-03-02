@@ -1,5 +1,6 @@
 package com.salam.dms.db.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.salam.dms.adapter.model.PlanMetaInfo;
 import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.Column;
@@ -14,6 +15,7 @@ import org.hibernate.annotations.Type;
 @Table(name = "plan")
 public class Plan {
     @Id
+    @JsonProperty("planId")
     private Long id;
     private String openAccessId;
     @Type(JsonType.class)
