@@ -1,10 +1,13 @@
 package com.salam.dms.db.entity;
 
 import com.salam.dms.model.Event;
+import com.salam.dms.model.RequestMetaInfo;
 import com.salam.dms.model.States;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import java.util.Date;
 
@@ -30,8 +33,9 @@ public class Transition {
 
     private Long requestId;
 
+    @Type(JsonType.class)
     @Column(columnDefinition = "json")
-    private String payload;
+    private RequestMetaInfo payload;
 
     private Date createdAt;
 

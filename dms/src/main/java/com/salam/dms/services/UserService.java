@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.validation.Validator;
 
 import java.util.Optional;
 
@@ -22,7 +21,6 @@ import static com.salam.dms.config.exception.AppErrors.USER_NOT_FOUND;
 public class UserService {
     final UserRepository userRepository;
     final OtpService otpService;
-    final Validator validator;
 
 
     public Optional<User> checkLogin(String username) {
