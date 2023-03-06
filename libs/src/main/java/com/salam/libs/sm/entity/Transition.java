@@ -1,8 +1,11 @@
 package com.salam.libs.sm.entity;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.Builder;
 import lombok.Data;
+import org.hibernate.annotations.Type;
 
 import java.util.Date;
 
@@ -25,8 +28,9 @@ public class Transition {
 
     private Long requestId;
 
+    @Type(JsonType.class)
     @Column(columnDefinition = "json")
-    private String payload;
+    private JsonNode payload;
 
     private Date createdAt;
 

@@ -14,6 +14,8 @@ import org.springframework.statemachine.persist.StateMachinePersister;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Slf4j
 @Service
 public class StateMachinePersisterDelegate {
@@ -23,6 +25,9 @@ public class StateMachinePersisterDelegate {
 
     public void saveTransition(StateContext<String, String> stateContext, RequestContext requestContext) {
         var event = stateContext.getEvent();
+        if (Objects.isNull(event)) {
+            return;
+        }
 
         String source = stateContext.getSource().getId();
         String target = stateContext.getTarget().getId();
@@ -32,7 +37,7 @@ public class StateMachinePersisterDelegate {
 
         var transition = Transition.builder()
                 .name(event)
-                .payload("{}")
+                .payload(requestContext.getMeta())
                 .requestId(requestId)
                 .from(source)
                 .to(target)

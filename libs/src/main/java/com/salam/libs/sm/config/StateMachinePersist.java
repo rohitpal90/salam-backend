@@ -40,7 +40,8 @@ public class StateMachinePersist implements org.springframework.statemachine.Sta
 
     @Override
     public void write(StateMachineContext<String, String> context, RequestContext requestContext) {
-        var request = getRequestById(requestContext.getRequestId()).orElseThrow();
+        var request = getRequestById(requestContext.getRequestId()).orElseThrow(() ->
+                new RequestNotFoundException(requestContext.getOrderId()));
 
         request.setState(context.getState());
         request.setMeta(requestContext.getMeta());

@@ -1,5 +1,6 @@
 package com.salam.libs.sm.config;
 
+import com.salam.libs.exceptions.RequestNotFoundException;
 import com.salam.libs.sm.entity.Request;
 import com.salam.libs.sm.model.EventData;
 import com.salam.libs.sm.model.EventResult;
@@ -36,7 +37,11 @@ public class StateMachineAdapter {
     @Transactional
     @SneakyThrows
     public void persist(StateMachine<String, String> stateMachine) {
-        persister.persist(stateMachine);
+        try {
+            persister.persist(stateMachine);
+        } catch (RequestNotFoundException e) {
+            newRequest(RequestContext.fromStateMachine(stateMachine));
+        }
     }
 
     public Mono<EventResult> trigger(EventData eventData, RequestContext requestContext) {
@@ -47,23 +52,25 @@ public class StateMachineAdapter {
                 .next();
     }
 
+    public StateMachine<String, String> create(RequestContext requestContext) {
+        var request = newRequest(requestContext);
+        requestContext.setRequestId(request.getId());
+        requestContext.setOrderId(request.getOrderId());
+
+        return restore(requestContext);
+    }
+
     public Mono<EventResult> trigger(String event, RequestContext requestContext) {
         return trigger(new EventData(event), requestContext);
     }
 
     @SneakyThrows
-    @Transactional
-    public <T extends RequestContext> T newRequest(T reqContext) {
+    private Request newRequest(RequestContext reqContext) {
         var request = new Request();
         request.setState(workflowProperties.getInitialState());
         request.setMeta(reqContext.getMeta());
         request.setOrderId(reqContext.getOrderId());
-        request = persister.createNew(request);
-
-        reqContext.setRequestId(request.getId());
-        reqContext.setOrderId(request.getOrderId());
-
-        return reqContext;
+        return persister.createNew(request);
     }
 
 }

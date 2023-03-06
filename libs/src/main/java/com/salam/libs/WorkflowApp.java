@@ -2,7 +2,6 @@ package com.salam.libs;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.salam.libs.annotations.EnableSalamWorkflow;
-import com.salam.libs.exceptions.RequestNotFoundException;
 import com.salam.libs.sm.config.GuardHandler;
 import com.salam.libs.sm.config.StateMachineAdapter;
 import com.salam.libs.sm.model.RequestContext;
@@ -83,7 +82,7 @@ public class WorkflowApp implements CommandLineRunner {
         var requestContext = new OrderContext(newOrderId);
         requestContext.setMetaInfo(meta);
 
-        var result1 = stateMachineAdapter.trigger("EVENT2", requestContext).block();
-        System.out.println(result1);
+        stateMachineAdapter.create(requestContext);
+        var eventResult = stateMachineAdapter.trigger("EVENT1", requestContext).block();
     }
 }

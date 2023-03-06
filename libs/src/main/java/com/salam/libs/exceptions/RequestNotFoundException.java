@@ -1,9 +1,13 @@
 package com.salam.libs.exceptions;
 
 public class RequestNotFoundException extends RuntimeException {
-    private final String orderId;
+    private String orderId;
 
     public RequestNotFoundException(String orderId) {
         this.orderId = orderId;
+    }
+
+    public RequestNotFoundException() {
+
     }
 }
