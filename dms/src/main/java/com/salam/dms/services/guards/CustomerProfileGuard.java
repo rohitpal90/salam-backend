@@ -32,7 +32,7 @@ public class CustomerProfileGuard extends GuardHandler {
         // send verify request
         var customerInfo = metaInfo.getCustomerInfo();
         var verifyResponse = customerService.createPhoneVerifyRequest(customerInfo.getMobile());
-        metaInfo.setVerifyBySmsResponse(verifyResponse);
+        metaInfo.setVerifyInfo(verifyResponse);
     }
 
     @Override

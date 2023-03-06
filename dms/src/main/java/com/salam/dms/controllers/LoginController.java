@@ -1,7 +1,7 @@
 package com.salam.dms.controllers;
 
-import com.salam.dms.model.request.DealerLogin;
-import com.salam.dms.services.DealerService;
+import com.salam.dms.services.UserService;
+import eu.fraho.spring.securityJwt.base.dto.AuthenticationRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,11 +16,12 @@ import java.util.Map;
 @AllArgsConstructor
 public class LoginController {
 
-    final DealerService dealerService;
+    final UserService userService;
+
 
     @PostMapping("/login/1")
-    public Object checkLogin( @RequestBody  @Valid DealerLogin login) {
-        dealerService.performLoginStep1(login);
+    public Object checkLogin(@RequestBody @Valid AuthenticationRequest request) {
+        userService.performLoginStep1(request);
         return Map.of("message", "success");
     }
 

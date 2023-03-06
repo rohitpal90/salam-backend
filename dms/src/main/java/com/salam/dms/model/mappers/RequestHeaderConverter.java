@@ -21,7 +21,7 @@ public class RequestHeaderConverter implements Converter<String, RequestContext>
     public RequestContext convert(String requestId) {
         JwtUser actor = Objects.requireNonNull(getPrincipalUser());
         var request = requestRepository
-                .findByOrderIdAndDealerId(requestId, actor.getId())
+                .findByOrderIdAndUserId(requestId, actor.getId())
                 .orElseThrow();
 
         var requestContext =  RequestContext.fromRequest(request);

@@ -13,7 +13,7 @@ public class RequestMetaInfo {
     private boolean isVerified = false;
     private Appointment appointment;
     private PlanInfo planInfo;
-    private VerifyBySmsResponse verifyBySmsResponse;
+    private VerifyBySmsResponse verifyInfo;
 
     public RequestMetaInfo(CustomerProfileRequest profileRequest) {
         this.customerInfo = profileRequest;
