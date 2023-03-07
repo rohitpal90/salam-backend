@@ -12,8 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
-
 import static com.salam.dms.config.exception.AppErrors.CUSTOMER_OTP_INVALID;
 
 @Slf4j
@@ -35,7 +33,7 @@ public class CustomerService {
 
     public boolean verifyBySms(String otp, RequestContext requestContext) {
         var metaInfo = requestContext.getMetaInfo();
-        var verifyResponse = metaInfo.getVerifyBySmsResponse();
+        var verifyResponse = metaInfo.getVerifyInfo();
 
         if (!otp.equals(verifyResponse.getCaptchaCode())) {
             throw AppError.create(CUSTOMER_OTP_INVALID);

@@ -28,7 +28,7 @@ public class TransitionService {
 
         var transition = Transition.builder()
                 .name(event)
-                .payload("{}")
+                .payload(requestContext.getMetaInfo())
                 .requestId(requestId)
                 .from(source)
                 .to(target)
