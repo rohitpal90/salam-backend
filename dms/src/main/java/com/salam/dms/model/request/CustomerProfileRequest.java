@@ -5,6 +5,7 @@ import com.salam.dms.model.validators.ValidDate;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Pattern;
 import lombok.Data;
+import org.hibernate.validator.constraints.Range;
 
 @Data
 public class CustomerProfileRequest {
@@ -19,4 +20,8 @@ public class CustomerProfileRequest {
     @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     @ValidDate(pattern = "dd-MM-yyyy", checkPast = true)
     private String dob;
+    @Range(min = -90L, max = 90L)
+    private Double lat;
+    @Range(min = -180L, max = 180L)
+    private Double lng;
 }
