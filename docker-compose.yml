@@ -28,3 +28,18 @@ services:
       - dms-db
     ports:
       - 8085:8085
+  ftth-web:
+    build: ./ftth
+    environment:
+      - FTTH_DB_URL=${FTTH_DB_URL}
+      - FTTH_DB_USERNAME=${FTTH_DB_USERNAME}
+      - FTTH_DB_PASSWORD=${FTTH_DB_PASSWORD}
+      - TOKEN_USERNAME=${TOKEN_USERNAME}
+      - TOKEN_PASSWORD=${TOKEN_PASSWORD}
+      - PRIV_FILE=${PRIV_FILE}
+      - PUB_FILE=${PUB_FILE}
+      - WF_USER:${WF_USER}
+    depends_on:
+      - dms-db
+    ports:
+      - 8086:8086

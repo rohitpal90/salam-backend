@@ -1,0 +1,45 @@
+name: ftth
+initialState: ACCOUNT_CREATION
+transitions:
+  - source: ACCOUNT_CREATION
+    target: MOBILE_VERIFICATION
+    event: CREATE_ACCOUNT
+  - source: ACCOUNT_CREATION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: MOBILE_VERIFICATION
+    target: INSTALLATION_SCHEDULE
+    event: VERIFY_MOBILE
+  - source: MOBILE_VERIFICATION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: INSTALLATION_SCHEDULE
+    target: REQUEST_CONFIRMATION
+    event: SCHEDULE
+  - source: INSTALLATION_SCHEDULE
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: REQUEST_CONFIRMATION
+    target: REVIEW
+    event: CUSTOMER_CONFIRM
+  - source: REQUEST_CONFIRMATION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: REVIEW
+    target: INSTALLATION
+    event: APPROVE
+  - source: REVIEW
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: REVIEW
+    target: REJECTED
+    event: REJECT
+  - source: REVIEW
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: INSTALLATION
+    target: COMPLETED
+    event: INSTALLED
+  - source: INSTALLATION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
