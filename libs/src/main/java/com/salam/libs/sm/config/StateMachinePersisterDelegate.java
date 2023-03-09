@@ -23,6 +23,7 @@ public class StateMachinePersisterDelegate {
     private final StateMachinePersister<String, String, RequestContext> persister;
     private final EntityManager entityManager;
 
+
     public void saveTransition(StateContext<String, String> stateContext, RequestContext requestContext) {
         var event = stateContext.getEvent();
         if (Objects.isNull(event)) {
@@ -37,7 +38,9 @@ public class StateMachinePersisterDelegate {
 
         var transition = Transition.builder()
                 .name(event)
-                .payload(requestContext.getMeta())
+                .payload(
+                        requestContext.getMetaRaw()
+                )
                 .requestId(requestId)
                 .from(source)
                 .to(target)

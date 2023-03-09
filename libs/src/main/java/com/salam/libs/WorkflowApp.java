@@ -1,6 +1,5 @@
 package com.salam.libs;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.salam.libs.annotations.EnableSalamWorkflow;
 import com.salam.libs.sm.config.GuardHandler;
 import com.salam.libs.sm.config.StateMachineAdapter;
@@ -39,24 +38,17 @@ public class WorkflowApp implements CommandLineRunner {
 
 
     @Setter @Getter
-    static class OrderContext extends RequestContext {
+    static class OrderContext extends RequestContext<MyMeta> {
 
         private TestOrderRequest testOrderRequest;
-        private MyMeta metaInfo;
 
-
-        public OrderContext(String orderId, MyMeta metaInfo) {
-            super(orderId);
-            this.metaInfo = metaInfo;
-        }
-
-        public OrderContext(String orderId) {
-            super(orderId);
+        public OrderContext(String orderId, Long userId) {
+            super(orderId, userId);
         }
 
         @Override
-        public JsonNode getMeta() {
-            return getMapper().convertValue(metaInfo, JsonNode.class);
+        public Class<MyMeta> getMetaClass() {
+            return MyMeta.class;
         }
     }
 
@@ -79,8 +71,8 @@ public class WorkflowApp implements CommandLineRunner {
         var meta = new MyMeta();
         meta.setValue("TEST");
 
-        var requestContext = new OrderContext(newOrderId);
-        requestContext.setMetaInfo(meta);
+        var requestContext = new OrderContext(newOrderId, 1L);
+        requestContext.setMeta(meta);
 
         stateMachineAdapter.create(requestContext);
         var eventResult = stateMachineAdapter.trigger("EVENT1", requestContext).block();

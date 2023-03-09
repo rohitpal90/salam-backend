@@ -12,9 +12,11 @@ public class EventResult {
 
     private final RequestContext requestContext;
     private final StateMachineEventResult<String, String> result;
+    private final StateMachine<String, String> sm;
 
 
     public EventResult(StateMachineEventResult<String, String> result, StateMachine<String, String> sm) {
+        this.sm = sm;
         this.requestContext = RequestContext.fromStateMachine(sm);
         this.result = result;
     }
@@ -24,4 +26,15 @@ public class EventResult {
         return List.of(DEFERRED, DENIED).contains(resultType);
     }
 
+    public RequestContext getRequestContext() {
+        return requestContext;
+    }
+
+    public StateMachineEventResult<String, String> getResult() {
+        return result;
+    }
+
+    public boolean hasStateMachineError() {
+        return this.sm.hasStateMachineError();
+    }
 }

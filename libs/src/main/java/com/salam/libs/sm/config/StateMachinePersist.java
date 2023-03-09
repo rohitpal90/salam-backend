@@ -3,8 +3,10 @@ package com.salam.libs.sm.config;
 import com.salam.libs.exceptions.RequestNotFoundException;
 import com.salam.libs.sm.entity.Request;
 import com.salam.libs.sm.model.RequestContext;
-import jakarta.persistence.*;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 import lombok.RequiredArgsConstructor;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.statemachine.ExtendedState;
 import org.springframework.statemachine.StateMachineContext;
@@ -18,8 +20,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class StateMachinePersist implements org.springframework.statemachine.StateMachinePersist<String, String, RequestContext> {
 
-    @PersistenceContext
-    EntityManager entityManager;
+    private final EntityManager entityManager;
 
 
     private Optional<Request> getRequestById(Long requestId) {
@@ -39,23 +40,31 @@ public class StateMachinePersist implements org.springframework.statemachine.Sta
     }
 
     @Override
+    @SneakyThrows
     public void write(StateMachineContext<String, String> context, RequestContext requestContext) {
         var request = getRequestById(requestContext.getRequestId()).orElseThrow(() ->
                 new RequestNotFoundException(requestContext.getOrderId()));
 
         request.setState(context.getState());
-        request.setMeta(requestContext.getMeta());
+        request.setMeta(
+                requestContext.getMetaRaw()
+        );
 
         entityManager.persist(request);
     }
 
     @Override
+    @SneakyThrows
     public StateMachineContext<String, String> read(RequestContext requestContext) {
         String orderId = requestContext.getOrderId();
         Request request = getRequestByOrderId(orderId)
                 .orElseThrow(() -> new RequestNotFoundException(orderId));
         requestContext.setOrderId(request.getOrderId());
         requestContext.setRequestId(request.getId());
+        requestContext.setUserId(request.getUserId());
+        requestContext.setMetaRaw(
+                request.getMeta()
+        );
 
         return new StateMachineContext<>() {
             @Override

@@ -2,19 +2,28 @@ package com.salam.libs.sm.model;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import lombok.SneakyThrows;
 import org.springframework.statemachine.StateMachine;
 
-public abstract class RequestContext {
+public abstract class RequestContext<M> {
     private Long requestId;
+    private Long userId;
     private String orderId;
     private Exception currentError;
-    private static final ObjectMapper mapper = new ObjectMapper();
+    private M meta;
+    private static final ObjectMapper objectMapper;
+
+    static {
+        objectMapper = (new ObjectMapper()).findAndRegisterModules().registerModule(new SimpleModule());
+    }
 
     public static final String KEY = "requestContext";
     public static final String ERROR_KEY = "error";
 
-    public RequestContext(String orderId) {
+    public RequestContext(String orderId, Long userId) {
         this.orderId = orderId;
+        this.userId = userId;
     }
 
     public static <T extends RequestContext> T fromStateMachine(StateMachine<String, String> stateMachine) {
@@ -56,9 +65,32 @@ public abstract class RequestContext {
         this.currentError = currentError;
     }
 
-    public ObjectMapper getMapper() {
-        return mapper;
+    public Long getUserId() {
+        return userId;
     }
 
-    public abstract JsonNode getMeta();
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public M getMeta() {
+        return meta;
+    }
+
+    public void setMeta(M meta) {
+        this.meta = meta;
+    }
+
+    @SneakyThrows
+    public void setMetaRaw(JsonNode metaRaw) {
+        this.setMeta(
+                objectMapper.treeToValue(metaRaw, getMetaClass())
+        );
+    }
+
+    public JsonNode getMetaRaw() {
+        return objectMapper.convertValue(getMeta(), JsonNode.class);
+    }
+
+    public abstract Class<M> getMetaClass();
 }

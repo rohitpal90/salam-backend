@@ -25,6 +25,9 @@ public class Request {
     private JsonNode meta;
 
     @Column(updatable = false)
+    private Long userId;
+
+    @Column(updatable = false)
     private String orderId;
 
     @CreatedDate

@@ -52,6 +52,7 @@ public class StateMachineAdapter {
                 .next();
     }
 
+    @Transactional
     public StateMachine<String, String> create(RequestContext requestContext) {
         var request = newRequest(requestContext);
         requestContext.setRequestId(request.getId());
@@ -68,8 +69,9 @@ public class StateMachineAdapter {
     private Request newRequest(RequestContext reqContext) {
         var request = new Request();
         request.setState(workflowProperties.getInitialState());
-        request.setMeta(reqContext.getMeta());
+        request.setMeta(reqContext.getMetaRaw());
         request.setOrderId(reqContext.getOrderId());
+        request.setUserId(reqContext.getUserId());
         return persister.createNew(request);
     }
 
