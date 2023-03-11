@@ -29,7 +29,8 @@ services:
     ports:
       - 8085:8085
   ftth-web:
-    build: ./ftth
+    build:
+      dockerfile: ./ftth/Dockerfile
     environment:
       - FTTH_DB_URL=${FTTH_DB_URL}
       - FTTH_DB_USERNAME=${FTTH_DB_USERNAME}
@@ -38,7 +39,7 @@ services:
       - TOKEN_PASSWORD=${TOKEN_PASSWORD}
       - PRIV_FILE=${PRIV_FILE}
       - PUB_FILE=${PUB_FILE}
-      - WF_USER:${WF_USER}
+      - WF_USER=${WF_USER}
     depends_on:
       - dms-db
     ports:

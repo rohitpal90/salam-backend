@@ -10,31 +10,31 @@ import java.util.function.Predicate;
 
 @Getter
 public class AppError extends RuntimeException {
-    private final AppErrors type;
+    private final AppErrorStruct type;
     private final Object data;
     private final Object[] messageParams;
 
     @Builder
-    private AppError(String message, Object data, AppErrors type, Object... args) {
+    private AppError(String message, Object data, AppErrorStruct type, Object... args) {
         super(resolveMessage(message, args, type));
         this.type = type;
         this.data = data;
         this.messageParams = args;
     }
 
-    public static AppError ofType(AppErrors error) {
+    public static AppError ofType(AppErrorStruct error) {
         return AppError.builder().type(error).build();
     }
 
-    public static AppError create(AppErrors type, Object data, Object... args) {
+    public static AppError create(AppErrorStruct type, Object data, Object... args) {
         return AppError.builder().data(data).args(args).type(type).build();
     }
 
-    public static AppError create(AppErrors type, Object... args) {
+    public static AppError create(AppErrorStruct type, Object... args) {
         return AppError.builder().args(args).type(type).build();
     }
 
-    public static AppError create(AppErrors type) {
+    public static AppError create(AppErrorStruct type) {
         return AppError.builder().type(type).build();
     }
 
@@ -42,7 +42,7 @@ public class AppError extends RuntimeException {
         return AppError.builder().type(type).message(message).build();
     }
 
-    private static String resolveMessage(String defaultMessage, Object[] messageParams, AppErrors type) {
+    private static String resolveMessage(String defaultMessage, Object[] messageParams, AppErrorStruct type) {
         return Optional.ofNullable(messageParams)
                 .map(p -> new MessageFormat(type.message()).format(p))
                 .orElseGet(() -> Optional.ofNullable(type.message())

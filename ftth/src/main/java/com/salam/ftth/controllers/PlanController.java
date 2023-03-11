@@ -20,7 +20,7 @@ public class PlanController {
 
 
     @GetMapping
-    public List<Plan> getPlanByDealerId(PlanFilterRequest filter, Pageable pageable) {
+    public List<Plan> getPlans(PlanFilterRequest filter, Pageable pageable) {
         return planService.getPlans(filter, pageable);
     }
 

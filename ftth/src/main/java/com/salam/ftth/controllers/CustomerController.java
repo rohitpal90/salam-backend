@@ -44,4 +44,9 @@ public class CustomerController {
         return stateMachineService.trigger(Event.CUSTOMER_CANCEL, requestContext);
     }
 
+    @PostMapping("/installed")
+    public EventResult rejectRequest(@RequestParam("reqId") RequestContext requestContext) {
+        return stateMachineService.trigger(Event.INSTALLED, requestContext);
+    }
+
 }

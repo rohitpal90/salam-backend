@@ -2,7 +2,6 @@ package com.salam.ftth.config.exception;
 
 import com.salam.ftth.model.mappers.RequestHeaderConverter;
 import com.salam.libs.exceptions.RequestNotFoundException;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -29,24 +28,24 @@ import static com.salam.ftth.config.exception.AppErrors.*;
 public class AppExceptionHandler {
 
     @ExceptionHandler(AppError.class)
-    protected ResponseEntity<?> handleAppError(AppError ex, WebRequest req) {
+    protected ResponseEntity<?> handleAppError(AppError ex) {
         return appErrorToResponseEntity(ex);
     }
 
     @ExceptionHandler(NoHandlerFoundException.class)
-    public ResponseEntity<?> handleNotFoundError(HttpServletRequest request, NoHandlerFoundException ex) {
+    public ResponseEntity<?> handleNotFoundError(NoHandlerFoundException ex) {
         AppError error = AppError.create(ex.getBody().getDetail(), URL_NOT_FOUND);
         return appErrorToResponseEntity(error);
     }
 
-    @ExceptionHandler({ AccessDeniedException.class })
-    public ResponseEntity<?> handleForbidden(Exception ex, WebRequest request) {
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handleForbidden() {
         AppError error = AppError.create("", FTTH_APP_ERROR);
         return appErrorToResponseEntity(error);
     }
 
     @ExceptionHandler(UsernameNotFoundException.class)
-    protected ResponseEntity<?> handlerUserNotFound(UsernameNotFoundException e) {
+    protected ResponseEntity<?> handlerUserNotFound() {
         return appErrorToResponseEntity(AppError.create(USER_NOT_FOUND));
     }
 
@@ -92,7 +91,7 @@ public class AppExceptionHandler {
     }
 
     private ResponseEntity<?> appErrorToResponseEntity(AppError ex) {
-        final AppErrors type = ex.getType();
+        final AppErrorStruct type = ex.getType();
         return appErrorToResponseEntity(ex, HttpStatusCode.valueOf(type.httpStatus().value()));
     }
 

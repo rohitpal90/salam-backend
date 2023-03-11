@@ -4,7 +4,7 @@ import com.salam.ftth.config.auth.UserDetailService;
 import com.salam.ftth.db.entity.User;
 import com.salam.ftth.model.RequestContext;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
@@ -13,10 +13,10 @@ import org.springframework.web.method.annotation.MethodArgumentTypeMismatchExcep
 import java.util.Optional;
 
 @Component
+@AllArgsConstructor
 public class RequestHeaderConverter implements Converter<String, RequestContext> {
 
-    @Autowired
-    User wfUser;
+    final User wfUser;
 
 
     @Override
