@@ -23,8 +23,6 @@ public class StateMachineAdapter {
     private final StateMachineFactory<States, Event> stateMachineFactory;
     private final AppStateMachinePersisterDelegate persister;
 
-    private static final String ERROR_KEY = "error";
-
     @SneakyThrows
     public StateMachine<States, Event> restore(RequestContext requestContext) {
         var stateMachine = stateMachineFactory.getStateMachine();
