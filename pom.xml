@@ -11,6 +11,7 @@
     <modules>
         <module>dms</module>
         <module>libs</module>
+        <module>ftth</module>
     </modules>
 
     <properties>
