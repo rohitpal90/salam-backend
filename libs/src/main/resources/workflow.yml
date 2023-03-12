@@ -1,0 +1,9 @@
+name: salam
+initialState: TEST1
+transitions:
+  - source: TEST1
+    target: TEST2
+    event: EVENT1
+  - source: TEST2
+    target: TEST3
+    event: EVENT2
