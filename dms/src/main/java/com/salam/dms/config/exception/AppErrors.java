@@ -8,7 +8,7 @@ public enum AppErrors implements AppErrorStruct {
     // global errors
     DMS_APP_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"),
     URL_NOT_FOUND(HttpStatus.NOT_FOUND, ""),
-    BAD_REQUEST(HttpStatus.BAD_REQUEST, ""),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "Form validation errors"),
 
     // app errors
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not found"),

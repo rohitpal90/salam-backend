@@ -6,6 +6,7 @@ import com.salam.dms.model.EventResult;
 import com.salam.dms.model.PlanInfo;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.CustomerProfileRequest;
+import com.salam.dms.model.request.PaymentInfoRequest;
 import com.salam.dms.model.request.VerifyCustomerRequest;
 import com.salam.dms.services.RequestService;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
@@ -40,7 +41,9 @@ public class CustomerController {
     }
 
     @PostMapping("/confirm")
-    public EventResult confirmRequest(@RequestParam("reqId") RequestContext requestContext) {
+    public EventResult confirmRequest(@RequestBody @Valid PaymentInfoRequest paymentInfoRequest,
+                                      @RequestParam("reqId") RequestContext requestContext) {
+        requestContext.setPaymentInfoRequest(paymentInfoRequest);
         return stateMachineAdapter.trigger(Event.CUSTOMER_CONFIRM, requestContext).block();
     }
 
