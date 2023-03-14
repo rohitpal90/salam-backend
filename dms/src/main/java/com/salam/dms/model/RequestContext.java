@@ -3,6 +3,7 @@ package com.salam.dms.model;
 import com.salam.dms.db.entity.Request;
 import com.salam.dms.model.request.AppointmentBookRequest;
 import com.salam.dms.model.request.CustomerProfileRequest;
+import com.salam.dms.model.request.PaymentInfoRequest;
 import com.salam.dms.model.request.VerifyCustomerRequest;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import lombok.Data;
@@ -24,6 +25,7 @@ public class RequestContext {
     // requests
     private VerifyCustomerRequest verifyCustomerRequest;
     private AppointmentBookRequest appointmentBookRequest;
+    private PaymentInfoRequest paymentInfoRequest;
 
     public static final String KEY = "requestContext";
     public static final String ERROR_KEY = "error";
@@ -77,5 +79,8 @@ public class RequestContext {
         this.getMetaInfo().setPlanInfo(planInfo);
     }
 
+    public void setPaymentInfoRequest(PaymentInfoRequest paymentInfoRequest) {
+        this.paymentInfoRequest = paymentInfoRequest;
+    }
 }
 

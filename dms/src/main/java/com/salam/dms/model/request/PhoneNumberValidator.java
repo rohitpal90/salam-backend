@@ -12,6 +12,7 @@ public class PhoneNumberValidator implements ConstraintValidator<MobileValidator
 
     private static final PhoneNumberUtil PHONEUTIL = PhoneNumberUtil.getInstance();
     private static final String DEFAULT_REGION = "SA"; // TODO: from env
+    private static final String PHONE_PREFIX = "+9665";
 
 
     @Override
@@ -22,7 +23,9 @@ public class PhoneNumberValidator implements ConstraintValidator<MobileValidator
     public static boolean isValidPhone(String value) {
         try {
             PhoneNumber phone = PHONEUTIL.parse(value, CountryCodeSource.UNSPECIFIED.name());
-            return PHONEUTIL.isValidNumberForRegion(phone, DEFAULT_REGION);
+            return PHONEUTIL.isValidNumberForRegion(phone, DEFAULT_REGION)
+                    && !Character.valueOf('0').equals(value.charAt(5))
+                    && value.startsWith(PHONE_PREFIX);
         } catch (NumberParseException e) {
             return false;
         }
