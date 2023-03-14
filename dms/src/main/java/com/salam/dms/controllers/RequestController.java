@@ -21,6 +21,7 @@ public class RequestController {
                 put("customerInfo", metaInfo.getCustomerInfo());
                 put("plan", metaInfo.getPlanInfo());
                 put("appointment", metaInfo.getAppointment());
+                put("paymentInfo", metaInfo.getPaymentInfo());
             }
         };
     }

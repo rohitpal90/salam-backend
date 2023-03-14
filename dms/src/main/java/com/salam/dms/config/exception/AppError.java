@@ -2,13 +2,13 @@ package com.salam.dms.config.exception;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.util.StringUtils;
 
 import java.text.MessageFormat;
 import java.util.Optional;
 import java.util.function.Predicate;
-
-import static com.salam.dms.config.exception.AppErrors.DMS_APP_ERROR;
 
 @Getter
 public class AppError extends RuntimeException {
@@ -51,5 +51,10 @@ public class AppError extends RuntimeException {
                         .filter(Predicate.not(StringUtils::isEmpty))
                         .orElse(defaultMessage)
                 );
+    }
+
+    public String getLocalizedMessage(MessageSource messageSource) {
+        return messageSource.getMessage(type.messageKey(), messageParams, getMessage(),
+                LocaleContextHolder.getLocale());
     }
 }

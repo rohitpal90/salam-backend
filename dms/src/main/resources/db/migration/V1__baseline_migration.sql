@@ -107,6 +107,7 @@ INSERT INTO plan (id,open_access_id,meta) VALUES
 	 (9902,'9902','{"name": "Fiber Prepaid,240", "price": "1 SAR", "category": "ftth", "planType": "prepaid", "description": "Unlimited, 12 Months + 3 Months free", "uploadSpeed": "60", "downloadSpeed": "240"}'),
 	 (10102,'10102','{"name": "Fiber Prepaid,240", "price": "1 SAR/Month", "category": "ftth", "planType": "postpaid", "description": "Unlimited", "uploadSpeed": "60", "downloadSpeed": "240"}'),
 	 (10802,'10802','{"name": "Fiber Prepaid,100", "price": "1 SAR", "category": "ftth", "planType": "prepaid", "description": "Unlimited, 12 Months", "uploadSpeed": "25", "downloadSpeed": "100"}');
+
 INSERT INTO dealer_plan (dealer_id,plan_id) VALUES
 	 (1,1903),
 	 (1,2902);
