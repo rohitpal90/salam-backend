@@ -21,5 +21,5 @@ update plan set meta = '{"name": "Fiber Prepaid,240", "price": "1 SAR/Month","ad
 update plan set meta = '{"name": "Fiber Prepaid,100", "price": "1 SAR","addons": [{"desc": "Orbit Family Pack Free Upon Order", "type": "orbit", "price": "Free", "title": "Orbit Family Plan"}], "category": "ftth", "planType": "prepaid", "description": "Unlimited, 12 Months", "uploadSpeed": "25", "downloadSpeed": "100"}'
         where id = 10802;
 
-
-
+update user set phone = '+966512345678' where id = 1;
+update user set phone = '+966512245678' where id = 2;
