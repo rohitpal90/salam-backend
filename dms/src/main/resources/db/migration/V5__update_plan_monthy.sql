@@ -1,0 +1,1 @@
+update plan set meta = JSON_SET(meta, '$.price', '100 SAR/Month');
