@@ -1,7 +1,6 @@
 package com.salam.dms.services;
 
 import com.salam.dms.config.exception.AppError;
-import com.salam.dms.config.exception.AppErrors;
 import com.salam.dms.db.entity.Plan;
 import com.salam.dms.model.request.PlanFilterRequest;
 import com.salam.dms.repos.PlanRepository;
@@ -12,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 import static com.salam.dms.config.exception.AppErrors.NOT_FOUND;
+import static com.salam.dms.config.exception.AppErrors.PLAN_NOT_FOUND;
 
 
 @Service
@@ -29,5 +29,14 @@ public class PlanService {
         if (!planRepository.existsByPlanIdAndDealerId(planId, dealerId)) {
             throw AppError.create("Plan not found", NOT_FOUND);
         }
+    }
+
+    public Plan getPlanDetail(String planId) {
+        var planOpt =  planRepository.findById(Long.valueOf(planId));
+        if (planOpt.isEmpty()) {
+            throw AppError.create(PLAN_NOT_FOUND);
+        }
+
+        return planOpt.get();
     }
 }
