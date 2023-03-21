@@ -24,7 +24,6 @@ public class PhoneNumberValidator implements ConstraintValidator<MobileValidator
         try {
             PhoneNumber phone = PHONEUTIL.parse(value, CountryCodeSource.UNSPECIFIED.name());
             return PHONEUTIL.isValidNumberForRegion(phone, DEFAULT_REGION)
-                    && !Character.valueOf('0').equals(value.charAt(5))
                     && value.startsWith(PHONE_PREFIX);
         } catch (NumberParseException e) {
             return false;
