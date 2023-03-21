@@ -26,6 +26,7 @@ public class RequestContext {
     private VerifyCustomerRequest verifyCustomerRequest;
     private AppointmentBookRequest appointmentBookRequest;
     private PaymentInfoRequest paymentInfoRequest;
+    private CustomerProfileRequest customerProfileRequest;
 
     public static final String KEY = "requestContext";
     public static final String ERROR_KEY = "error";

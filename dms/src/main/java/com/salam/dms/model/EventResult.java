@@ -17,9 +17,11 @@ import static org.springframework.statemachine.StateMachineEventResult.ResultTyp
 public class EventResult {
 
     private final RequestContext requestContext;
+    private final StateMachine<States, Event> sm;
 
 
     public EventResult(StateMachineEventResult<States, Event> result, StateMachine<States, Event> sm) {
+        this.sm = sm;
         this.requestContext = RequestContext.fromStateMachine(sm);
 
         if (hasAppError()) {
@@ -53,4 +55,7 @@ public class EventResult {
         return requestContext.getOrderId();
     }
 
+    public States getState() {
+        return sm.getState().getId();
+    }
 }

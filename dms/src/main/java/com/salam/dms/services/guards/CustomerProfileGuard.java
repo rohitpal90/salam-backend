@@ -31,6 +31,8 @@ public class CustomerProfileGuard extends GuardHandler {
 
         // send verify request
         var customerInfo = metaInfo.getCustomerInfo();
+        metaInfo.setCustomerInfo(requestContext.getCustomerProfileRequest());
+
         var verifyResponse = customerService.createPhoneVerifyRequest(customerInfo.getMobile());
         metaInfo.setVerifyInfo(verifyResponse);
     }

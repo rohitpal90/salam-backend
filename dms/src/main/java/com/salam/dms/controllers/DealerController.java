@@ -22,4 +22,9 @@ public class DealerController {
         return stateMachineAdapter.trigger(Event.INSTALLED, requestContext).block();
     }
 
+    @PostMapping("/review")
+    public EventResult reviewRequest(@RequestParam("reqId") RequestContext requestContext) {
+        return stateMachineAdapter.trigger(Event.REVIEW_REQUEST, requestContext).block();
+    }
+
 }

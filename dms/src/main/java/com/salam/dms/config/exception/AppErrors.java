@@ -14,7 +14,7 @@ public enum AppErrors implements AppErrorStruct {
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "Request not found"),
     BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid otp or insufficient access rights"),
     BAD_TOKEN(HttpStatus.BAD_REQUEST, "Invalid token"),
-    INSUFFICIENT_ACCESS(HttpStatus.FORBIDDEN, "Insufficent access rights"),
+    INSUFFICIENT_ACCESS(HttpStatus.FORBIDDEN, "Insufficient access rights"),
     PLAN_NOT_FOUND(HttpStatus.NOT_FOUND, "Plan not found"),
 
     // guard errors
