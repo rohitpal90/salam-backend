@@ -1,5 +1,6 @@
 package com.salam.dms.services;
 
+import com.salam.dms.config.exception.AppError;
 import com.salam.dms.db.entity.Request;
 import com.salam.dms.model.PlanInfo;
 import com.salam.dms.model.RequestContext;
@@ -14,7 +15,8 @@ import org.springframework.util.StringUtils;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Optional;
+
+import static com.salam.dms.config.exception.AppErrors.REQUEST_NOT_FOUND;
 
 @Slf4j
 @AllArgsConstructor
@@ -59,13 +61,11 @@ public class RequestService {
     public RequestContext fetchRequest(String requestId, JwtUser user) {
         var request = requestRepository
                 .findByOrderIdAndUserId(requestId, user.getId())
-                .orElseThrow();
+                .orElseThrow(() -> AppError.create(REQUEST_NOT_FOUND));
 
         var requestContext = RequestContext.fromRequest(request);
         requestContext.setActor(user);
 
         return requestContext;
     }
-
-
 }
