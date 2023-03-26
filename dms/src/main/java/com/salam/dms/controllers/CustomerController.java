@@ -28,8 +28,10 @@ public class CustomerController {
     @PostMapping
     public EventResult createCustomerProfile(@RequestBody @Valid CustomerProfileRequest profileRequest,
                                              @AuthenticationPrincipal JwtUser user,
+                                             @RequestParam(value = "reqId", required = false) String requestId,
                                              PlanInfo planInfo) {
-        var requestContext = requestService.initiate(profileRequest, planInfo, user);
+        var requestContext = requestService.initiateOrGet(profileRequest, planInfo, user, requestId);
+        requestContext.setCustomerProfileRequest(profileRequest);
         return stateMachineAdapter.trigger(Event.CREATE_ACCOUNT, requestContext).block();
     }
 

@@ -10,5 +10,6 @@ public enum Event {
     APPROVE,
     INSTALLED,
     REJECT,
+    REVIEW_REQUEST,
     COMPLETE
 }
