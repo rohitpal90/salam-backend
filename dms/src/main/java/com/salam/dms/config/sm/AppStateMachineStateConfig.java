@@ -46,15 +46,19 @@ public class AppStateMachineStateConfig extends EnumStateMachineConfigurerAdapte
     public void configure(StateMachineTransitionConfigurer<States, Event> transitions)
             throws Exception {
         transitions.withExternal()
-                    .source(ACCOUNT_CREATION).target(MOBILE_VERIFICATION)
-                    .event(CREATE_ACCOUNT).guard(getEventGuard(CREATE_ACCOUNT));
+                .source(ACCOUNT_CREATION).target(MOBILE_VERIFICATION)
+                .event(CREATE_ACCOUNT).guard(getEventGuard(CREATE_ACCOUNT));
 
         transitions.withExternal()
                 .source(ACCOUNT_CREATION).target(CANCELLED).event(CUSTOMER_CANCEL);
 
         transitions.withExternal()
-                    .source(MOBILE_VERIFICATION).target(INSTALLATION_SCHEDULE)
-                    .event(VERIFY_MOBILE).guard(getEventGuard(VERIFY_MOBILE));
+                .source(MOBILE_VERIFICATION).target(INSTALLATION_SCHEDULE)
+                .event(VERIFY_MOBILE).guard(getEventGuard(VERIFY_MOBILE));
+
+        transitions.withExternal()
+                .source(MOBILE_VERIFICATION).target(ACCOUNT_CREATION)
+                .event(REVIEW_REQUEST);
 
         transitions.withExternal()
                 .source(MOBILE_VERIFICATION).target(CANCELLED).event(CUSTOMER_CANCEL);
@@ -64,11 +68,19 @@ public class AppStateMachineStateConfig extends EnumStateMachineConfigurerAdapte
                 .event(SCHEDULE).guard(getEventGuard(SCHEDULE));
 
         transitions.withExternal()
+                .source(INSTALLATION_SCHEDULE).target(ACCOUNT_CREATION)
+                .event(REVIEW_REQUEST);
+
+        transitions.withExternal()
                 .source(INSTALLATION_SCHEDULE).target(CANCELLED).event(CUSTOMER_CANCEL);
 
         transitions.withExternal()
                 .source(REQUEST_CONFIRMATION).target(REVIEW)
                 .event(CUSTOMER_CONFIRM).guard(getEventGuard(CUSTOMER_CONFIRM));
+
+        transitions.withExternal()
+                .source(REQUEST_CONFIRMATION).target(ACCOUNT_CREATION)
+                .event(REVIEW_REQUEST);
 
         transitions.withExternal()
                 .source(REQUEST_CONFIRMATION).target(CANCELLED).event(CUSTOMER_CANCEL);
@@ -117,7 +129,8 @@ public class AppStateMachineStateConfig extends EnumStateMachineConfigurerAdapte
                 .findFirst()
                 .orElseGet(() -> new GuardHandler() {
                     @Override
-                    public void handle(StateContext<States, Event> context) {}
+                    public void handle(StateContext<States, Event> context) {
+                    }
 
                     @Override
                     public Event forType() {

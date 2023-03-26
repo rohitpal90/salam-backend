@@ -1,7 +1,7 @@
 package com.salam.dms.model.mappers;
 
 import com.salam.dms.model.RequestContext;
-import com.salam.dms.repos.RequestRepository;
+import com.salam.dms.services.RequestService;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
@@ -15,19 +15,12 @@ import java.util.Objects;
 public class RequestHeaderConverter implements Converter<String, RequestContext> {
 
     @Autowired
-    RequestRepository requestRepository;
+    RequestService requestService;
 
     @Override
     public RequestContext convert(String requestId) {
         JwtUser actor = Objects.requireNonNull(getPrincipalUser());
-        var request = requestRepository
-                .findByOrderIdAndUserId(requestId, actor.getId())
-                .orElseThrow();
-
-        var requestContext =  RequestContext.fromRequest(request);
-        requestContext.setActor(actor);
-
-        return requestContext;
+        return requestService.fetchRequest(requestId, actor);
     }
 
     private JwtUser getPrincipalUser() {

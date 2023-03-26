@@ -1,5 +1,6 @@
 package com.salam.dms.services;
 
+import com.salam.dms.config.exception.AppError;
 import com.salam.dms.db.entity.Request;
 import com.salam.dms.model.PlanInfo;
 import com.salam.dms.model.RequestContext;
@@ -10,9 +11,12 @@ import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+
+import static com.salam.dms.config.exception.AppErrors.REQUEST_NOT_FOUND;
 
 @Slf4j
 @AllArgsConstructor
@@ -22,9 +26,16 @@ public class RequestService {
     private final RequestRepository requestRepository;
     private static final DateTimeFormatter ORDER_DATE_FMT = DateTimeFormatter.ofPattern("yyMMdd");
 
-    public RequestContext initiate(CustomerProfileRequest profileRequest,
-                                   PlanInfo planInfo, JwtUser user) {
+    public RequestContext initiateOrGet(CustomerProfileRequest profileRequest, PlanInfo planInfo,
+                                        JwtUser user, String requestId) {
+        // load existing
+        if (StringUtils.hasText(requestId)) {
+            return fetchRequest(requestId, user);
+        }
+
+        // create new
         var requestContext = RequestContext.createNew(profileRequest);
+        requestContext.setCustomerProfileRequest(profileRequest);
         requestContext.setPlanInfo(planInfo);
         requestContext.setActor(user);
 
@@ -47,5 +58,14 @@ public class RequestService {
         return String.format("%s%010d", prefix, currentOrderCount + 1);
     }
 
+    public RequestContext fetchRequest(String requestId, JwtUser user) {
+        var request = requestRepository
+                .findByOrderIdAndUserId(requestId, user.getId())
+                .orElseThrow(() -> AppError.create(REQUEST_NOT_FOUND));
 
+        var requestContext = RequestContext.fromRequest(request);
+        requestContext.setActor(user);
+
+        return requestContext;
+    }
 }
