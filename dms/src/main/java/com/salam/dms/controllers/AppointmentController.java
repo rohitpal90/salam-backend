@@ -8,6 +8,8 @@ import com.salam.dms.model.EventResult;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.AppointmentBookRequest;
 import com.salam.dms.services.AppointmentService;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,10 @@ public class AppointmentController {
 
 
     @GetMapping
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",ref ="AppointmentResponse"),
+            @ApiResponse(responseCode = "401",ref = "unauthenticatedResponse"),
+            })
     public List<Appointment> fetchAppointments() {
         var appointmentRequest = new AppointmentRequest();
         appointmentRequest.setAccessMode("GPON");
@@ -34,6 +40,10 @@ public class AppointmentController {
     }
 
     @PostMapping("/book")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200",ref ="appointmentBookResponse"),
+            @ApiResponse(responseCode = "401",ref = "unauthenticatedResponse"),
+            @ApiResponse(responseCode = "404",ref = "notFoundResponse")})
     public EventResult bookAppointment( @RequestBody @Valid AppointmentBookRequest request,
                                        @RequestParam("reqId") RequestContext requestContext) {
         requestContext.setAppointmentBookRequest(request);
