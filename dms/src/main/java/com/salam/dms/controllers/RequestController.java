@@ -2,6 +2,9 @@ package com.salam.dms.controllers;
 
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.services.PlanService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +20,7 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/requests")
+@Tag(name = "Request")
 public class RequestController {
 
     @Autowired
@@ -26,6 +30,14 @@ public class RequestController {
     Integer planVat;
 
     @GetMapping("/summary")
+    @Operation(
+            summary = "Order summary by request id",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "SummaryResponse"),
+                    @ApiResponse(responseCode = "401", ref = "UnauthenticatedResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse")
+            }
+    )
     public Object getReqInfo(@RequestParam("reqId") RequestContext requestContext) {
         var metaInfo = requestContext.getMetaInfo();
         var summary = new HashMap<String, Object>() {

@@ -1,0 +1,128 @@
+{
+  "LoginSuccessResponse": {
+    "message": "Success"
+  },
+  "LoginFailureResponse": {
+    "message": "User not found"
+  },
+  "AppointmentResponse": [
+    {
+      "taskType": "T1002",
+      "appointmentDatetime": "2022-09-11,18:00 - 21:00",
+      "teamId": "84",
+      "slotId": "1"
+    },
+    {
+      "taskType": "T1002",
+      "appointmentDatetime": "2022-09-11,21:00 - 23:59",
+      "teamId": "84",
+      "slotId": "2"
+    }
+  ],
+  "UnauthenticatedResponse": {
+    "message": "Unauthenticated"
+  },
+  "CustomerSuccessResponse": {
+    "message": "success",
+    "state": "MOBILE_VERIFICATION",
+    "reqId": "2303290000000001"
+  },
+  "VerifyBadResponse": {
+    "message": "Invalid otp"
+  },
+  "VerifySuccessResponse": {
+    "message": "success",
+    "state": "INSTALLATION_SCHEDULE",
+    "reqId": "2303290000000001"
+  },
+  "SummaryResponse": {
+    "billingInfo": {
+      "vat": "35 SAR",
+      "total": "36 SAR",
+      "monthly": "1 SAR"
+    },
+    "customerInfo": {
+      "id": "1023456789",
+      "mobile": "+966512345678",
+      "odbPlateNumber": "test143",
+      "dob": "22-03-2023",
+      "lat": 0,
+      "lng": 0
+    },
+    "appointment": {
+      "taskType": "T1002",
+      "appointmentDatetime": "2022-09-11,18:00 - 21:00",
+      "teamId": "84",
+      "slotId": "1"
+    },
+    "plan": {
+      "planId": "1903",
+      "provider": "salam"
+    },
+    "paymentInfo": {
+      "paymentMethod": "sadad"
+    },
+    "reqId": "2303290000000004"
+  },
+  "AppointmentBookResponse": {
+    "message": "success",
+    "state": "REQUEST_CONFIRMATION",
+    "reqId": "2303290000000003"
+  },
+  "RequestNotFoundResponse": {
+    "message": "Request Not Found"
+  },
+  "CustomerReviewResponse": {
+    "message": "success",
+    "state": "ACCOUNT_CREATION",
+    "reqId": "2303290000000003"
+  },
+  "CustomerConfirmResponse": {
+    "message": "success",
+    "state": "REVIEW",
+    "reqId": "2303290000000003"
+  },
+  "CustomerCancelResponse": {
+    "message": "success",
+    "state": "CANCELLED",
+    "reqId": "2303290000000003"
+  },
+  "PlanResponse": [
+    {
+      "openAccessId": "9902",
+      "meta": {
+        "downloadSpeed": "240",
+        "name": "Fiber Prepaid,240",
+        "planType": "prepaid",
+        "price": "1 SAR",
+        "uploadSpeed": "60",
+        "description": "Unlimited, 12 Months + 3 Months free",
+        "openAccessId": null,
+        "category": "ftth",
+        "addons": [
+          {
+            "type": "orbit",
+            "title": "Orbit Family Plan",
+            "desc": "Orbit Family Pack Free Upon Order",
+            "price": "Free"
+          }
+        ]
+      },
+      "planId": 1903
+    }
+  ],
+  "BadRequestResponse": {
+    "message": "Form validation errors",
+    "error": {
+      "data": {
+        "field-1": "form field error message"
+      }
+    }
+  },
+  "NotFoundResponse": {
+    "message": "Not Found"
+  },
+  "InvalidStateResponse": {
+    "message": "Invalid state"
+  }
+}

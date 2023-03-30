@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.salam.dms.config.exception.AppErrors.NOT_FOUND;
 import static com.salam.dms.config.exception.AppErrors.PLAN_NOT_FOUND;
 
 
@@ -27,7 +26,7 @@ public class PlanService {
 
     public void checkDealerPlan(String planId, Long dealerId) {
         if (!planRepository.existsByPlanIdAndDealerId(planId, dealerId)) {
-            throw AppError.create("Plan not found", NOT_FOUND);
+            throw AppError.create(PLAN_NOT_FOUND);
         }
     }
 
