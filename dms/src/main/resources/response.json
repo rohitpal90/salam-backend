@@ -1,43 +1,41 @@
 {
   "LoginSuccessResponse": {
-    "message" : "Success"
+    "message": "Success"
   },
   "LoginFailureResponse": {
-    "message" : "User not found"
+    "message": "User not found"
   },
-  "AppointmentResponse":
-  [
-  {
-    "taskType": "T1002",
-    "appointmentDatetime": "2022-09-11,18:00 - 21:00",
-    "teamId": "84",
-    "slotId": "1"
+  "AppointmentResponse": [
+    {
+      "taskType": "T1002",
+      "appointmentDatetime": "2022-09-11,18:00 - 21:00",
+      "teamId": "84",
+      "slotId": "1"
+    },
+    {
+      "taskType": "T1002",
+      "appointmentDatetime": "2022-09-11,21:00 - 23:59",
+      "teamId": "84",
+      "slotId": "2"
+    }
+  ],
+  "UnauthenticatedResponse": {
+    "message": "Unauthenticated"
   },
-  {
-    "taskType": "T1002",
-    "appointmentDatetime": "2022-09-11,21:00 - 23:59",
-    "teamId": "84",
-    "slotId": "2"
-  }
-   ],
-  "Unauthenticated": {
-    "message" : "Unauthenticated"
-  },
-  "CustomerSuccess": {
+  "CustomerSuccessResponse": {
     "message": "success",
-  "state": "MOBILE_VERIFICATION",
-  "reqId": "2303290000000001"
-
+    "state": "MOBILE_VERIFICATION",
+    "reqId": "2303290000000001"
   },
-  "VerifyBadResponse" : {
-      "message" : "Invalid otp"
+  "VerifyBadResponse": {
+    "message": "Invalid otp"
   },
-  "VerifySuccess": {
+  "VerifySuccessResponse": {
     "message": "success",
     "state": "INSTALLATION_SCHEDULE",
     "reqId": "2303290000000001"
   },
-  "SummaryResponse" : {
+  "SummaryResponse": {
     "billingInfo": {
       "vat": "35 SAR",
       "total": "36 SAR",
@@ -66,30 +64,30 @@
     },
     "reqId": "2303290000000004"
   },
-  "AppointmentBookResponse" :{
+  "AppointmentBookResponse": {
     "message": "success",
     "state": "REQUEST_CONFIRMATION",
     "reqId": "2303290000000003"
   },
-  "RequestNotFound": {
-    "message" : "Request Not Found"
+  "RequestNotFoundResponse": {
+    "message": "Request Not Found"
   },
-  "CustomerReview": {
+  "CustomerReviewResponse": {
     "message": "success",
-   "state": "ACCOUNT_CREATION",
+    "state": "ACCOUNT_CREATION",
     "reqId": "2303290000000003"
   },
-  "customerConfirm" : {
+  "CustomerConfirmResponse": {
     "message": "success",
     "state": "REVIEW",
     "reqId": "2303290000000003"
   },
-  "customerCancel" : {
+  "CustomerCancelResponse": {
     "message": "success",
     "state": "CANCELLED",
-   "reqId": "2303290000000003"
+    "reqId": "2303290000000003"
   },
-  "planResponse": [
+  "PlanResponse": [
     {
       "openAccessId": "9902",
       "meta": {
@@ -112,16 +110,19 @@
       },
       "planId": 1903
     }
-    ],
-  "badResponse": {
+  ],
+  "BadRequestResponse": {
     "message": "Form validation errors",
     "error": {
       "data": {
-        "id": "Id format is wrong"
+        "field-1": "form field error message"
       }
     }
+  },
+  "NotFoundResponse": {
+    "message": "Not Found"
+  },
+  "InvalidStateResponse": {
+    "message": "Invalid state"
   }
-
-
-
 }

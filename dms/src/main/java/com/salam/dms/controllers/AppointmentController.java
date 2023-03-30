@@ -8,11 +8,11 @@ import com.salam.dms.model.EventResult;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.AppointmentBookRequest;
 import com.salam.dms.services.AppointmentService;
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,6 +20,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/appointments")
+@Tag(name = "Appointment")
 public class AppointmentController {
 
     private final AppointmentService appointmentService;
@@ -27,10 +28,14 @@ public class AppointmentController {
 
 
     @GetMapping
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",ref ="AppointmentResponse"),
-            @ApiResponse(responseCode = "401",ref = "unauthenticatedResponse"),
-            })
+    @Operation(
+            summary = "Get appointments",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "AppointmentResponse"),
+                    @ApiResponse(responseCode = "400", ref = "InvalidStateResponse"),
+                    @ApiResponse(responseCode = "401", ref = "UnauthenticatedResponse"),
+            }
+    )
     public List<Appointment> fetchAppointments() {
         var appointmentRequest = new AppointmentRequest();
         appointmentRequest.setAccessMode("GPON");
@@ -40,11 +45,16 @@ public class AppointmentController {
     }
 
     @PostMapping("/book")
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "200",ref ="appointmentBookResponse"),
-            @ApiResponse(responseCode = "401",ref = "unauthenticatedResponse"),
-            @ApiResponse(responseCode = "404",ref = "notFoundResponse")})
-    public EventResult bookAppointment( @RequestBody @Valid AppointmentBookRequest request,
+    @Operation(
+            summary = "Book installation appointment",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "AppointmentBookResponse"),
+                    @ApiResponse(responseCode = "400", ref = "InvalidStateResponse"),
+                    @ApiResponse(responseCode = "401", ref = "UnauthenticatedResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse")
+            }
+    )
+    public EventResult bookAppointment(@RequestBody @Valid AppointmentBookRequest request,
                                        @RequestParam("reqId") RequestContext requestContext) {
         requestContext.setAppointmentBookRequest(request);
         return stateMachineAdapter.trigger(Event.SCHEDULE, requestContext).block();

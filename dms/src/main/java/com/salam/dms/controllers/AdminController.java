@@ -5,12 +5,14 @@ import com.salam.dms.model.Event;
 import com.salam.dms.model.EventResult;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.AppointmentBookRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @AllArgsConstructor
 @RequestMapping("/admin")
+@Tag(name = "Admin")
 public class AdminController {
 
     private final StateMachineAdapter stateMachineAdapter;
