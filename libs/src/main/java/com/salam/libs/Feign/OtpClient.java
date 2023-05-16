@@ -6,9 +6,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(value = "otp",url = "http://localhost:7044/absher/")
+@FeignClient(value = "otp")
 public interface OtpClient {
 
-    @PostMapping(value = "/otp")
+    @PostMapping(value = "${otp.getotp.url}")
     SendOtpResponse getOtp(@SpringQueryMap SendOtpRequest request);
 }
