@@ -13,11 +13,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.statemachine.StateContext;
 import org.springframework.stereotype.Component;
 
 @EnableSalamWorkflow
 @SpringBootApplication
+@EnableFeignClients
 public class WorkflowApp implements CommandLineRunner {
 
     @Slf4j
