@@ -1,40 +1,20 @@
 package com.salam.libs.sm.model;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Data;
 
 
 @Data
 public class Citizen {
-  @JsonProperty("dateOfBirthH")
-  private String dateOfBirthH ;
 
-  @JsonProperty("englishFirstName")
-  private String englishFirstName;
-
-  @JsonProperty("englishLastName")
-  private String englishLastName ;
-
-  @JsonProperty("englishSecondName")
-  private String englishSecondName ;
-
-  @JsonProperty("englishThirdName")
-  private String englishThirdName;
-
-  @JsonProperty("familyName")
-  private String familyName ;
-
-  @JsonProperty("fatherName")
-  private String fatherName ;
-
-  @JsonProperty("firstName")
-  private String firstName ;
-
-  @JsonProperty("grandFatherName")
-  private String grandFatherName;
-
-  @JsonProperty("idExpiryDate")
-  private String idExpiryDate ;
+    private String dateOfBirthH;
+    private String englishFirstName;
+    private String englishLastName;
+    private String englishSecondName;
+    private String englishThirdName;
+    private String familyName;
+    private String fatherName;
+    private String firstName;
+    private String grandFatherName;
+    private String idExpiryDate;
 
 
 }

@@ -1,4 +1,4 @@
-package com.salam.libs.Feign;
+package com.salam.libs.feign;
 
 import com.salam.libs.sm.model.SendOtpRequest;
 import com.salam.libs.sm.model.SendOtpResponse;
@@ -6,9 +6,9 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(value = "otp")
-public interface OtpClient {
+@FeignClient(value = "absher")
+public interface AbsherClient {
 
-    @PostMapping(value = "${otp.getotp.url}")
+    @PostMapping(value = "${absher.getotp.url}")
     SendOtpResponse getOtp(@SpringQueryMap SendOtpRequest request);
 }
