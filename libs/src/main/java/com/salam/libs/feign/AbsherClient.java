@@ -6,7 +6,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.cloud.openfeign.SpringQueryMap;
 import org.springframework.web.bind.annotation.PostMapping;
 
-@FeignClient(value = "absher")
+@FeignClient(value = "${host.name}"+""+"absher")
 public interface AbsherClient {
 
     @PostMapping(value = "${absher.getotp.url}")
