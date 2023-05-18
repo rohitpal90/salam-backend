@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 @EnableSalamWorkflow
 @SpringBootApplication
-@EnableFeignClients
 public class WorkflowApp implements CommandLineRunner {
 
     @Slf4j
