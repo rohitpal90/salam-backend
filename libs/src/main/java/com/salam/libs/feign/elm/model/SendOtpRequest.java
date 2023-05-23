@@ -1,8 +1,10 @@
-package com.salam.libs.sm.model;
+package com.salam.libs.feign.elm.model;
+
+import lombok.Builder;
 import lombok.Data;
 
-
 @Data
+@Builder
 public class SendOtpRequest {
 
     private String customerId;
@@ -10,6 +12,4 @@ public class SendOtpRequest {
     private String reason;
     private String packageName;
     private String language;
-
-
 }

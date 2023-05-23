@@ -1,6 +1,6 @@
-package com.salam.libs.sm.model;
-import lombok.Data;
+package com.salam.libs.feign.elm.model;
 
+import lombok.Data;
 
 @Data
 public class Citizen {
@@ -15,6 +15,4 @@ public class Citizen {
     private String firstName;
     private String grandFatherName;
     private String idExpiryDate;
-
-
 }
