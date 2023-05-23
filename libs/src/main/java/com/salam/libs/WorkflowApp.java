@@ -31,7 +31,7 @@ public class WorkflowApp implements CommandLineRunner {
         @Override
         public void handle(StateContext<String, String> context) {
             var requestContext = RequestContext.fromStateMachine(context.getStateMachine());
-            log.info("guard test: {}", requestContext);
+            log.info("guard test: {}",requestContext);
         }
 
         @Override
