@@ -8,6 +8,8 @@ import com.salam.dms.adapter.model.response.VerifyBySmsResponse;
 import com.salam.dms.config.exception.AppError;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.CustomerProfileRequest;
+import com.salam.libs.feign.elm.client.AbsherClient;
+import com.salam.libs.feign.elm.client.YakeenClient;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,6 +25,12 @@ public class CustomerService {
 
     @Autowired
     ClientMockAdapter clientMockAdapter;
+
+    @Autowired
+    YakeenClient yakeenClient;
+
+    @Autowired
+    AbsherClient absherClient;
 
 
     public VerifyBySmsResponse createPhoneVerifyRequest(String mobile) {
