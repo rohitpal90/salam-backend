@@ -3,6 +3,7 @@ package com.salam.libs;
 import com.salam.libs.annotations.EnableSalamWebClients;
 import com.salam.libs.annotations.EnableSalamWorkflow;
 import com.salam.libs.feign.elm.client.AbsherClient;
+import com.salam.libs.feign.elm.client.YakeenClient;
 import com.salam.libs.feign.elm.model.SendOtpRequest;
 import com.salam.libs.sm.config.GuardHandler;
 import com.salam.libs.sm.config.StateMachineAdapter;
@@ -40,7 +41,6 @@ public class WorkflowApp implements CommandLineRunner {
         }
     }
 
-
     @Setter
     @Getter
     static class OrderContext extends RequestContext<MyMeta> {
@@ -68,6 +68,9 @@ public class WorkflowApp implements CommandLineRunner {
     @Autowired
     AbsherClient absherClient;
 
+    @Autowired
+    YakeenClient yakeenClient;
+
 
     public static void main(String[] args) {
         SpringApplication.run(WorkflowApp.class, args);
@@ -75,7 +78,15 @@ public class WorkflowApp implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        testAbsherClient();
+        try {
+            testYakeenClient();
+        } catch (Exception e) {}
+
+        try {
+            testAbsherClient();
+        } catch (Exception e) {}
+
+
     }
 
     void testStateMachine() {
@@ -100,5 +111,9 @@ public class WorkflowApp implements CommandLineRunner {
                         .operatorId("operatorId")
                         .build()
         ));
+    }
+
+    void testYakeenClient() {
+        System.out.println(yakeenClient.getCitizen("nin", "04-1230"));
     }
 }
