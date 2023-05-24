@@ -114,6 +114,6 @@ public class WorkflowApp implements CommandLineRunner {
     }
 
     void testYakeenClient() {
-        System.out.println(yakeenClient.getCitizen("nin", "04-1230"));
+        System.out.println(yakeenClient.getCitizenInfo("nin", "04-1230"));
     }
 }
