@@ -1,7 +1,8 @@
 package com.salam.libs.feign.elm.client;
 
+import com.salam.libs.feign.elm.model.SalamSuccessResponse;
 import com.salam.libs.feign.elm.model.SendOtpRequest;
-import com.salam.libs.feign.elm.model.SendOtpResponseSuccessSalamResponse;
+import com.salam.libs.feign.elm.model.SendOtpResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -10,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestBody;
 public interface AbsherClient {
 
     @PostMapping(value = "${absher.otp.url}")
-    SendOtpResponseSuccessSalamResponse sendOtpRequest(@RequestBody SendOtpRequest request);
+    SalamSuccessResponse<SendOtpResponse> sendOtpRequest(@RequestBody SendOtpRequest request);
 }

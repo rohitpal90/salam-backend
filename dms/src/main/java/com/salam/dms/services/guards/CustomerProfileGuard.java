@@ -4,9 +4,11 @@ import com.salam.dms.config.sm.GuardHandler;
 import com.salam.dms.model.Event;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.States;
+import com.salam.dms.model.IdentityInfo;
 import com.salam.dms.services.CustomerService;
 import com.salam.dms.services.PlanService;
 import lombok.AllArgsConstructor;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.statemachine.StateContext;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +35,14 @@ public class CustomerProfileGuard extends GuardHandler {
         var customerInfo = metaInfo.getCustomerInfo();
         metaInfo.setCustomerInfo(requestContext.getCustomerProfileRequest());
 
-        var verifyResponse = customerService.createPhoneVerifyRequest(customerInfo.getMobile());
+        var locale = LocaleContextHolder.getLocale();
+        var ninVerifyResponse = customerService.createNinVerifyRequest(customerInfo);
+        var customerAddresses = customerService.getCustomerAddresses(customerInfo, locale);
+        var identityInfo = new IdentityInfo(ninVerifyResponse, customerAddresses);
+        metaInfo.setIdentityInfo(identityInfo);
+
+        var plan = planService.getPlanDetail(planId);
+        var verifyResponse = customerService.createPhoneVerifyRequest(customerInfo, plan, locale);
         metaInfo.setVerifyInfo(verifyResponse);
     }
 

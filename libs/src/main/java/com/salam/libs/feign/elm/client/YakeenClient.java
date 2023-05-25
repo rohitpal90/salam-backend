@@ -1,28 +1,31 @@
 package com.salam.libs.feign.elm.client;
 
-import com.salam.libs.feign.elm.model.AddressDtoListSuccessSalamResponse;
-import com.salam.libs.feign.elm.model.EntityDtoSuccessSalamResponse;
+import com.salam.libs.feign.elm.model.AddressDto;
+import com.salam.libs.feign.elm.model.EntityDto;
+import com.salam.libs.feign.elm.model.SalamSuccessResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.List;
+
 @FeignClient(name = "yakeen")
 public interface YakeenClient {
 
     @GetMapping(value = "${yakeen.citizen.url}")
-    EntityDtoSuccessSalamResponse getCitizenInfo(@PathVariable String nin, @RequestParam String dateOfBirth);
+    SalamSuccessResponse<EntityDto> getCitizenInfo(@PathVariable String nin, @RequestParam String dateOfBirth);
 
     @GetMapping(value = "${yakeen.expats.url}")
-    EntityDtoSuccessSalamResponse getExpatInfo(@PathVariable String iqamaNumber, @RequestParam String dateOfBirth);
+    SalamSuccessResponse<EntityDto> getExpatInfo(@PathVariable String iqamaNumber, @RequestParam String dateOfBirth);
 
     @GetMapping(value = "${yakeen.citizen.addresses.url}")
-    AddressDtoListSuccessSalamResponse getCitizenAddresses(@PathVariable String nin,
-                                                           @RequestParam String dateOfBirth,
-                                                           @RequestParam String language);
+    SalamSuccessResponse<List<AddressDto>> getCitizenAddresses(@PathVariable String nin,
+                                                               @RequestParam String dateOfBirth,
+                                                               @RequestParam String language);
 
     @GetMapping(value = "${yakeen.expats.addresses.url}")
-    AddressDtoListSuccessSalamResponse getExpatsIqamaNumberAddresses(@PathVariable String nin,
+    SalamSuccessResponse<List<AddressDto>> getExpatsIqamaNumberAddresses(@PathVariable String nin,
                                                                      @RequestParam String dateOfBirth,
                                                                      @RequestParam String language);
 }

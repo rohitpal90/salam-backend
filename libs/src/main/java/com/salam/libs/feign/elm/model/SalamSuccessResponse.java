@@ -2,12 +2,10 @@ package com.salam.libs.feign.elm.model;
 
 import lombok.Data;
 
-import java.util.List;
-
 
 @Data
-public class AddressDtoListSuccessSalamResponse {
+public class SalamSuccessResponse<T> {
     private Boolean success;
     private String traceId;
-    private List<AddressDto> data;
+    private T data;
 }
