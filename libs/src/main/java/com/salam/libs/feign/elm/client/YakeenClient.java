@@ -20,12 +20,12 @@ public interface YakeenClient {
     SalamSuccessResponse<EntityDto> getExpatInfo(@PathVariable String iqamaNumber, @RequestParam String dateOfBirth);
 
     @GetMapping(value = "${yakeen.citizen.addresses.url}")
-    SalamSuccessResponse<List<AddressDto>> getCitizenAddresses(@PathVariable String nin,
+    SalamSuccessResponse<List<AddressDto>> getCitizenAddresses(@PathVariable("nin") String nin,
                                                                @RequestParam String dateOfBirth,
                                                                @RequestParam String language);
 
     @GetMapping(value = "${yakeen.expats.addresses.url}")
-    SalamSuccessResponse<List<AddressDto>> getExpatsIqamaNumberAddresses(@PathVariable String nin,
+    SalamSuccessResponse<List<AddressDto>> getExpatsIqamaNumberAddresses(@PathVariable("iqamaNumber") String iqamaNumber,
                                                                      @RequestParam String dateOfBirth,
                                                                      @RequestParam String language);
 }

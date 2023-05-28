@@ -1,31 +1,33 @@
 package com.salam.dms.services;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.salam.dms.adapter.feign.client.AbClient;
-import com.salam.dms.adapter.feign.client.CusClient;
 import com.salam.dms.adapter.feign.client.CustomerClient;
 import com.salam.dms.adapter.feign.mock.ClientMockAdapter;
 import com.salam.dms.config.exception.AppError;
 import com.salam.dms.config.exception.AppErrors;
 import com.salam.dms.db.entity.Plan;
+import com.salam.dms.model.IdentityInfo;
 import com.salam.dms.model.RequestContext;
 import com.salam.dms.model.request.CustomerProfileRequest;
 import com.salam.libs.feign.elm.client.AbsherClient;
 import com.salam.libs.feign.elm.client.YakeenClient;
-import com.salam.libs.feign.elm.model.*;
+import com.salam.libs.feign.elm.model.EntityDto;
+import com.salam.libs.feign.elm.model.ErrorSalamResponse;
+import com.salam.libs.feign.elm.model.SendOtpRequest;
+import com.salam.libs.feign.elm.model.SendOtpResponse;
 import feign.FeignException;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Locale;
+import java.util.Map;
 
 import static com.salam.dms.config.exception.AppErrors.CUSTOMER_OTP_INVALID;
 
@@ -50,9 +52,6 @@ public class CustomerService {
 
     @Autowired
     private MessageSource messageSource;
-
-
-
 
 
     public SendOtpResponse createPhoneVerifyRequest(CustomerProfileRequest request, Plan plan,
@@ -89,62 +88,73 @@ public class CustomerService {
         return true;
     }
 
-    @SneakyThrows
-    public EntityDto createNinVerifyRequest(CustomerProfileRequest customerInfo) {
+    public IdentityInfo verifyAndGetCustomerInfo(CustomerProfileRequest customerInfo) {
         var nin = customerInfo.getId();
         var dateOfBirth = customerInfo.getDob();
+
+        var locale = LocaleContextHolder.getLocale();
+        var language = locale.getLanguage();
+
+        var isCitizen = nin.startsWith("1");
+        EntityDto entityDto;
         try {
-            var citizenInfo = new SalamSuccessResponse<EntityDto>();
-            if(customerInfo.getId().startsWith("1")) {
-                citizenInfo = yakeenClient.getCitizenInfo(nin, dateOfBirth);
-            }
-            if(customerInfo.getId().startsWith("2")){
-                citizenInfo = yakeenClient.getExpatInfo(nin, dateOfBirth);
-            }
-            return citizenInfo.getData();
-        }catch (FeignException e){
-            handleException(e,customerInfo);
+            var identityInfoResponse = isCitizen ?
+                    yakeenClient.getCitizenInfo(nin, dateOfBirth) :
+                    yakeenClient.getExpatInfo(nin, dateOfBirth);
+
+            entityDto = identityInfoResponse.getData();
+        } catch (FeignException e) {
+            handleVerifyErrorIfRequired(e, locale);
+            throw e;
         }
-        return new EntityDto();
+
+        var addressesResponse = isCitizen ?
+                yakeenClient.getCitizenAddresses(nin, dateOfBirth, language) :
+                yakeenClient.getExpatsIqamaNumberAddresses(nin, dateOfBirth, language);
+        var addresses = addressesResponse.getData();
+
+        return new IdentityInfo(entityDto, addresses);
     }
 
-    @SneakyThrows
-    public List<AddressDto> getCustomerAddresses(CustomerProfileRequest customerInfo,
-                                                                       Locale locale) {
-        var nin = customerInfo.getId();
-        var dateOfBirth = customerInfo.getDob();
-        try {
-            var response = new SalamSuccessResponse<List<AddressDto>>();
-            if(customerInfo.getId().startsWith("1")) {
-                 response = yakeenClient.getCitizenAddresses(nin, dateOfBirth, locale.getLanguage());
-            }
-            if(customerInfo.getId().startsWith("2")){
-                 response = yakeenClient.getExpatsIqamaNumberAddresses(nin, dateOfBirth, locale.getLanguage());
-            }
-            return response.getData();
-        }catch (FeignException exception){
-            handleException(exception,customerInfo);
-        }
-         return new ArrayList<>();
-    }
-    private void handleException(FeignException e, CustomerProfileRequest customerInfo) throws IOException {
+    private void handleVerifyErrorIfRequired(FeignException e, Locale locale) {
         int status = e.status();
-        if(status == 400){
-            ByteBuffer byteBuffer = e.responseBody().get();
-            ErrorSalamResponse response = new ObjectMapper().readValue(byteBuffer.array(),ErrorSalamResponse.class);
-            Map<String,List<String>> errorList = response.getErrors();
-            var idMessage = messageSource.getMessage("id",null,LocaleContextHolder.getLocale());
-            var dobMessage = messageSource.getMessage("dob",null,LocaleContextHolder.getLocale());
-            Map<String,String> errorMap = new HashMap<>();
-            errorList.forEach((k,v)->{
-                if(k.equals("dateofBirth")){
-                    errorMap.put("dob",dobMessage);
-                }
-                if(k.equals("nin")){
-                    errorMap.put("id",idMessage);
+        var messagePrefix = "com.validation.yakeen.customer";
+
+        if (status == HttpStatus.BAD_REQUEST.value()) {
+            var errorResponse = e.responseBody().map(byteBuffer -> {
+                try {
+                    return new ObjectMapper().readValue(byteBuffer.array(), ErrorSalamResponse.class);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
                 }
             });
-            throw AppError.create(AppErrors.BAD_REQUEST,errorMap,null);
+
+            var errorInfo = new HashMap<>();
+            if (errorResponse.isPresent()) {
+                var errors = errorResponse.get().getErrors();
+                if (errors.containsKey("nin")) {
+                    errorInfo.put("id", getMessageSourceValue(messagePrefix, "nin", locale));
+                }
+
+                if (errors.containsKey("dateOfBirth")) {
+                    errorInfo.put("dob", getMessageSourceValue(messagePrefix, "dateOfBirth", locale));
+                }
+            }
+
+            throw AppError.create(AppErrors.BAD_REQUEST, errorInfo, null);
         }
+
+        if (status == HttpStatus.NOT_FOUND.value()) {
+            var errorInfo = Map.of("id", getMessageSourceValue(messagePrefix, "nin", locale));
+            throw AppError.create(AppErrors.BAD_REQUEST, errorInfo, null);
+        }
+    }
+
+    private String getMessageSourceValue(String prefix, String value, Locale locale) {
+        return messageSource.getMessage(
+                String.join(".", prefix, value),
+                null,
+                locale
+        );
     }
 }

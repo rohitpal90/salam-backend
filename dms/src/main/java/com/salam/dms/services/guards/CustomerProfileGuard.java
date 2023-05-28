@@ -36,9 +36,7 @@ public class CustomerProfileGuard extends GuardHandler {
         metaInfo.setCustomerInfo(requestContext.getCustomerProfileRequest());
 
         var locale = LocaleContextHolder.getLocale();
-        var ninVerifyResponse = customerService.createNinVerifyRequest(customerInfo);
-        var customerAddresses = customerService.getCustomerAddresses(customerInfo, locale);
-        var identityInfo = new IdentityInfo(ninVerifyResponse, customerAddresses);
+        var identityInfo = customerService.verifyAndGetCustomerInfo(customerInfo);
         metaInfo.setIdentityInfo(identityInfo);
 
         var plan = planService.getPlanDetail(planId);
