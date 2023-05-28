@@ -18,7 +18,7 @@ public class CustomerProfileRequest {
     @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
     private String odbPlateNumber;
     @NotEmpty(message = "{com.constraint.FieldEmpty.message}")
-    @ValidDate(pattern = "dd-MM-yyyy", checkPast = true)
+    @Pattern(regexp="^[0-9]{2}-[0-9]{4}$", message="{com.constraint.DateFormat.message}")
     private String dob;
     @Range(min = -90L, max = 90L)
     private Double lat;

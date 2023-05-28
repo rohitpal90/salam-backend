@@ -15,10 +15,12 @@ public class IdentityInfo {
     private String lastName;
     private String nationality;
     private String city;
+    private String dob;
 
     public IdentityInfo(EntityDto entityDto, List<AddressDto> addresses) {
         this.firstName = entityDto.getFirstName();
         this.lastName = entityDto.getLastName();
+        this.dob = entityDto.getDateOfBirth();
         this.nationality = entityDto.getNationality();
 
         if (!CollectionUtils.isEmpty(addresses)) {
