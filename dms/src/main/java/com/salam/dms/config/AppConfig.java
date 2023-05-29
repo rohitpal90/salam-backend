@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.salam.dms.model.request.AuthenticationRequestPOJOBuilder;
+import com.salam.libs.annotations.EnableSalamWebClients;
 import eu.fraho.spring.securityJwt.base.dto.AuthenticationRequest;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
 
 @Configuration
 @ComponentScan("dev.samstevens.totp.spring.autoconfigure")
-@EnableFeignClients
+@EnableSalamWebClients
 public class AppConfig {
 
     @Value("classpath:mocks/*")
