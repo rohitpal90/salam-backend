@@ -58,6 +58,4 @@ public class UserDetailService implements UserDetailsService {
                         .toList())
                 .orElse(Collections.emptyList());
     }
-
-
 }

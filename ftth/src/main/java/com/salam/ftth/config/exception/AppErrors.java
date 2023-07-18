@@ -1,9 +1,7 @@
 package com.salam.ftth.config.exception;
 
-import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-@AllArgsConstructor
 public enum AppErrors implements AppErrorStruct {
     // global errors
     FTTH_APP_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Something went wrong"),
@@ -14,14 +12,28 @@ public enum AppErrors implements AppErrorStruct {
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not found"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "Request not found"),
-    BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid otp or insufficient access rights"),
+    BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid password"),
     // guard errors
     NO_APPOINTMENTS_FOUND(HttpStatus.BAD_REQUEST, "No appointments found"),
     CUSTOMER_OTP_INVALID(HttpStatus.BAD_REQUEST, "Invalid OTP"),
-    INVALID_STATE(HttpStatus.BAD_REQUEST, "Invalid state");
+    INVALID_STATE(HttpStatus.BAD_REQUEST, "Invalid state"),
+    PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "Password mismatch"),
+    INVALID_CAPTCHA(HttpStatus.BAD_REQUEST, "Invalid Captcha");
 
     private final HttpStatus httpStatus;
     private final String message;
+    private String messageKey;
+
+    AppErrors(HttpStatus httpStatus, String message) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+    }
+
+    AppErrors(HttpStatus httpStatus, String message, String messageKey) {
+        this.httpStatus = httpStatus;
+        this.message = message;
+        this.messageKey = messageKey;
+    }
 
     @Override
     public HttpStatus httpStatus() {
@@ -33,4 +45,12 @@ public enum AppErrors implements AppErrorStruct {
         return this.message;
     }
 
+    @Override
+    public String messageKey() {
+        return messageKey;
+    }
+
+    public void setMessageKey(String messageKey) {
+        this.messageKey = messageKey;
+    }
 }

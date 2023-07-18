@@ -1,9 +1,6 @@
 package com.salam.ftth.model;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.salam.ftth.model.request.AppointmentBookRequest;
-import com.salam.ftth.model.request.VerifyCustomerRequest;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 
 public class RequestContext extends com.salam.libs.sm.model.RequestContext<RequestMetaInfo> {
@@ -11,7 +8,6 @@ public class RequestContext extends com.salam.libs.sm.model.RequestContext<Reque
     private JwtUser actor;
 
     // requests
-    private VerifyCustomerRequest verifyInfo;
     private AppointmentBookRequest appointmentBookRequest;
 
     public static final String KEY = "requestContext";
@@ -19,10 +15,6 @@ public class RequestContext extends com.salam.libs.sm.model.RequestContext<Reque
 
     public RequestContext(String orderId, Long userId) {
         super(orderId, userId);
-    }
-
-    public void setVerifySmsRequest(VerifyCustomerRequest verifyInfo) {
-        this.verifyInfo = verifyInfo;
     }
 
     public void setVerified(boolean verified) {
@@ -47,14 +39,6 @@ public class RequestContext extends com.salam.libs.sm.model.RequestContext<Reque
 
     public void setAppointmentBookRequest(AppointmentBookRequest appointmentBookRequest) {
         this.appointmentBookRequest = appointmentBookRequest;
-    }
-
-    public VerifyCustomerRequest getVerifyInfo() {
-        return verifyInfo;
-    }
-
-    public void setVerifyInfo(VerifyCustomerRequest verifyInfo) {
-        this.verifyInfo = verifyInfo;
     }
 
     @Override

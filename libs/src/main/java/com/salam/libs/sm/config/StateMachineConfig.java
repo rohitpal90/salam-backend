@@ -2,6 +2,7 @@ package com.salam.libs.sm.config;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.statemachine.StateContext;
 import org.springframework.statemachine.config.EnableStateMachineFactory;
 import org.springframework.statemachine.config.StateMachineConfigurerAdapter;
@@ -16,6 +17,7 @@ import java.util.Optional;
 
 @Configuration
 @EnableStateMachineFactory
+@Import({StateMachineAdapter.class, StateMachinePersisterDelegate.class, StateMachinePersist.class})
 public class StateMachineConfig extends StateMachineConfigurerAdapter<String, String> {
 
     @Autowired
