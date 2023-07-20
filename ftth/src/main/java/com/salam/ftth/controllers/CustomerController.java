@@ -2,7 +2,9 @@ package com.salam.ftth.controllers;
 
 import com.salam.ftth.config.exception.AppError;
 import com.salam.ftth.model.request.RegisterRequest;
-import com.salam.ftth.services.StateMachineService;
+import com.salam.ftth.model.response.CustomerSubscription;
+import com.salam.ftth.services.CustomerService;
+import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -10,12 +12,14 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springdoc.core.annotations.ParameterObject;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 import static com.salam.ftth.config.exception.AppErrors.PASSWORD_MISMATCH;
@@ -27,7 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/customers")
 public class CustomerController {
 
-    private final StateMachineService stateMachineService;
+    private final CustomerService customerService;
 
     @PostMapping("/register")
     @Operation(
@@ -52,4 +56,18 @@ public class CustomerController {
 
         return Map.of("message", "success");
     }
+
+    @Operation(
+            summary = "Get Customer subscriptions",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "SubscriptionResultResponse")
+            }
+    )
+    @GetMapping("/subscriptions")
+    public List<CustomerSubscription> getSubscriptions(@AuthenticationPrincipal JwtUser user,
+                                                       @ParameterObject Pageable pageable) {
+        var pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+        return customerService.getCustomerSubscriptions(user, pageRequest);
+    }
+
 }

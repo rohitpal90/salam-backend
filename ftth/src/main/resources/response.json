@@ -115,11 +115,11 @@
     "message": "Invalid state"
   },
   "LoginRequest": {
-    "username": "customer1@yopmail.com",
+    "username": "+9660501235679",
     "password": "test"
   },
   "LoginVerifyRequest": {
-    "username": "customer1@yopmail.com",
+    "username": "+9660501235679",
     "password": "test",
     "captchaCode": "1234"
   },
@@ -134,5 +134,45 @@
     "password": "test",
     "confirmPassword": "test",
     "mobileOtp": "1234"
-  }
+  },
+  "PlanResponse": [
+    {
+      "openAccessId": "9902",
+      "meta": {
+        "downloadSpeed": "240",
+        "name": "Fiber Prepaid,240",
+        "planType": "prepaid",
+        "price": "1 SAR",
+        "uploadSpeed": "60",
+        "description": "Unlimited, 12 Months + 3 Months free",
+        "openAccessId": null,
+        "category": "ftth",
+        "addons": [
+          {
+            "type": "orbit",
+            "title": "Orbit Family Plan",
+            "desc": "Orbit Family Pack Free Upon Order",
+            "price": "Free"
+          }
+        ]
+      },
+      "planId": 1903
+    }
+  ],
+  "SubscriptionResultResponse": [
+    {
+      "orderId": "2307201000000001",
+      "state": "ACCOUNT_CREATION",
+      "planInfo": {
+        "name": "Fiber Prepaid,240",
+        "price": "1 SAR",
+        "category": "ftth",
+        "planType": "prepaid",
+        "description": "Unlimited, 12 Months + 3 Months free",
+        "uploadSpeed": "60",
+        "downloadSpeed": "240"
+      },
+      "createdAt": "2023-07-20T07:28:48Z"
+    }
+  ]
 }

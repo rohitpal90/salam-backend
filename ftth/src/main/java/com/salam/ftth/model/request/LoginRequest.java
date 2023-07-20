@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class LoginRequest {
 
-    @NotBlank(groups = {LoginRequestStep1.class, LoginRequestStep2.class})
+    @MobileValidator(groups = {LoginRequestStep1.class, LoginRequestStep2.class})
     private String username;
 
     @NotBlank(groups = {LoginRequestStep1.class, LoginRequestStep2.class})

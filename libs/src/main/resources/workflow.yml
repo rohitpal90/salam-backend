@@ -1,9 +1,6 @@
 name: salam
-initialState: TEST1
+initialState: ACCOUNT_CREATION
 transitions:
-  - source: TEST1
-    target: TEST2
-    event: EVENT1
-  - source: TEST2
-    target: TEST3
-    event: EVENT2
+  - source: ACCOUNT_CREATION
+    target: MOBILE_VERIFICATION
+    event: CREATE_ACCOUNT

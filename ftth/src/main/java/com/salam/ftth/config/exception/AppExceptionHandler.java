@@ -2,6 +2,7 @@ package com.salam.ftth.config.exception;
 
 import com.salam.ftth.model.mappers.RequestHeaderConverter;
 import com.salam.ftth.model.response.ErrorInfo;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,7 @@ import java.util.Objects;
 
 import static com.salam.ftth.config.exception.AppErrors.*;
 
+@Slf4j
 @RestControllerAdvice
 public class AppExceptionHandler {
 
@@ -82,6 +84,8 @@ public class AppExceptionHandler {
         }
 
         error = AppError.create("", FTTH_APP_ERROR);
+
+        log.error("error", ex);
         return appErrorToResponseEntity(error);
     }
 

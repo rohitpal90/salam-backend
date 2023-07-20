@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS user (
   active boolean default true,
   created_at timestamp DEFAULT CURRENT_TIMESTAMP,
   updated_at timestamp DEFAULT CURRENT_TIMESTAMP,
-  deleted_at timestamp,
+  deleted_at datetime DEFAULT NULL,
   PRIMARY KEY user_pk_id(id),
   UNIQUE KEY user_uk_email(email),
   UNIQUE KEY user_uk_phone(phone)
