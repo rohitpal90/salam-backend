@@ -54,7 +54,7 @@ public class UserDetailService implements UserDetailsService {
     private static List<GrantedAuthority> mapRolesToAuthorities(Set<Role> roles) {
         return Optional.ofNullable(roles)
                 .map(rs -> rs.stream()
-                        .map(role -> (GrantedAuthority) new SimpleGrantedAuthority(role.getRole()))
+                        .map(role -> (GrantedAuthority) new SimpleGrantedAuthority(role.getRole().name()))
                         .toList())
                 .orElse(Collections.emptyList());
     }

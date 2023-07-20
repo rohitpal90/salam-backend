@@ -14,12 +14,14 @@ import org.hibernate.annotations.Type;
 @Entity
 @Table(name = "plan")
 public class Plan {
+
     @Id
     @JsonProperty("planId")
     private Long id;
+
     private String openAccessId;
+
     @Type(JsonType.class)
     @Column(columnDefinition = "json")
     private PlanMetaInfo meta;
-
 }

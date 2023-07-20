@@ -11,6 +11,7 @@ public enum AppErrors implements AppErrorStruct {
     // app errors
     NOT_FOUND(HttpStatus.NOT_FOUND, "Not found"),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "User not found"),
+    USER_EXISTS(HttpStatus.BAD_REQUEST, "User with this phone or email already exists"),
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "Request not found"),
     BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid password"),
     // guard errors

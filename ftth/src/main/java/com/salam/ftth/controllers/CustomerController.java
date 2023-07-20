@@ -1,6 +1,5 @@
 package com.salam.ftth.controllers;
 
-import com.salam.ftth.config.exception.AppError;
 import com.salam.ftth.model.request.RegisterRequest;
 import com.salam.ftth.model.response.CustomerSubscription;
 import com.salam.ftth.services.CustomerService;
@@ -16,13 +15,11 @@ import org.springdoc.core.annotations.ParameterObject;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-import static com.salam.ftth.config.exception.AppErrors.PASSWORD_MISMATCH;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Slf4j
@@ -37,11 +34,12 @@ public class CustomerController {
     @Operation(
             summary = "Register customer",
             responses = {
-                    @ApiResponse(responseCode = "200", ref = "EventResultResponse"),
+                    @ApiResponse(responseCode = "200", ref = "SuccessResponse"),
                     @ApiResponse(responseCode = "400", content = @Content(
                             mediaType = APPLICATION_JSON_VALUE,
                             examples = {
                                     @ExampleObject(name = "BadRequestResponse", ref = "BadRequestResponse"),
+                                    @ExampleObject(name = "UserAlreadyExistResponse", ref = "UserAlreadyExistResponse"),
                             }
                     )),
             },
@@ -50,10 +48,7 @@ public class CustomerController {
             }))
     )
     public Object registerCustomer(@RequestBody @Valid RegisterRequest registerRequest) {
-        if (!StringUtils.pathEquals(registerRequest.getPassword(), registerRequest.getConfirmPassword())) {
-            throw AppError.create(PASSWORD_MISMATCH);
-        }
-
+        customerService.register(registerRequest);
         return Map.of("message", "success");
     }
 

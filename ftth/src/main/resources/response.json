@@ -174,5 +174,8 @@
       },
       "createdAt": "2023-07-20T07:28:48Z"
     }
-  ]
+  ],
+  "UserAlreadyExistResponse": {
+    "message": "User with this mobile or email already exists"
+  }
 }

@@ -9,20 +9,29 @@ import com.salam.ftth.adapter.feign.mock.ClientMockAdapter;
 import com.salam.ftth.adapter.model.request.VerifySmsRequest;
 import com.salam.ftth.adapter.model.response.VerifyBySmsResponse;
 import com.salam.ftth.config.exception.AppError;
+import com.salam.ftth.db.entity.Role;
+import com.salam.ftth.db.entity.User;
 import com.salam.ftth.model.RequestContext;
+import com.salam.ftth.model.UserMetaInfo;
 import com.salam.ftth.model.request.CustomerProfileRequest;
+import com.salam.ftth.model.request.IDType;
+import com.salam.ftth.model.request.RegisterRequest;
 import com.salam.ftth.model.response.CustomerSubscription;
+import com.salam.ftth.repos.RoleRepository;
 import com.salam.ftth.repos.UserRepository;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.util.List;
 
-import static com.salam.ftth.config.exception.AppErrors.CUSTOMER_OTP_INVALID;
+import static com.salam.ftth.config.exception.AppErrors.*;
 
 @Slf4j
 @Service
@@ -31,7 +40,9 @@ public class CustomerService {
 
     final CustomerClient customerClient;
     final UserRepository userRepository;
+    final RoleRepository roleRepository;
     final ClientMockAdapter clientMockAdapter;
+    final BCryptPasswordEncoder passwordEncoder;
 
 
     public VerifyBySmsResponse createPhoneVerifyRequest(String mobile) {
@@ -60,8 +71,7 @@ public class CustomerService {
         return true;
     }
 
-    public List<CustomerSubscription> getCustomerSubscriptions(JwtUser user,
-                                                               Pageable pageable) {
+    public List<CustomerSubscription> getCustomerSubscriptions(JwtUser user, Pageable pageable) {
         var metaMapper = new ObjectMapper();
         return userRepository.getCustomerSubscriptions(user.getId(), pageable)
                 .stream()
@@ -78,4 +88,34 @@ public class CustomerService {
                 }).toList();
     }
 
+    public void register(RegisterRequest registerRequest) {
+        if (!StringUtils.pathEquals(registerRequest.getPassword(), registerRequest.getConfirmPassword())) {
+            throw AppError.create(PASSWORD_MISMATCH);
+        }
+
+        var user = new User();
+        user.setName(registerRequest.getFullName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPhone(registerRequest.getMobile());
+        user.setPassword(
+                passwordEncoder.encode(registerRequest.getPassword())
+        );
+        user.setActive(true);
+
+        var meta = new UserMetaInfo(
+                IDType.valueOf(registerRequest.getIdType()),
+                registerRequest.getDob(),
+                registerRequest.getId()
+        );
+        user.setMeta(meta);
+
+        var roles = roleRepository.findAllByRole(Role.RoleType.CUSTOMER);
+        user.setRoles(roles);
+
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw AppError.create(USER_EXISTS);
+        }
+    }
 }
