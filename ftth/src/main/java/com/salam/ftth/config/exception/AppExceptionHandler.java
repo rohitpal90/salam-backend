@@ -103,7 +103,7 @@ public class AppExceptionHandler {
     private ResponseEntity<?> appErrorToResponseEntity(AppError ex, HttpStatusCode code) {
         var errorInfo = new ErrorInfo(ex.getLocalizedMessage(messageSource));
         if (Objects.nonNull(ex.getData())) {
-            errorInfo.setData(Map.of("data", ex.getData()));
+            errorInfo.setError(Map.of("data", ex.getData()));
         }
 
         return ResponseEntity.status(code).body(errorInfo);
