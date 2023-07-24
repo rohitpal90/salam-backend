@@ -16,8 +16,8 @@
     "state": "MOBILE_VERIFICATION",
     "reqId": "2303290000000001"
   },
-  "VerifyBadResponse": {
-    "message": "Invalid otp"
+  "BadOtpResponse": {
+    "message": "Invalid OTP"
   },
   "VerifySuccessResponse": {
     "message": "success",
@@ -118,10 +118,9 @@
     "username": "+9660501235679",
     "password": "test"
   },
-  "LoginVerifyRequest": {
+  "OtpVerifyRequest": {
     "username": "+9660501235679",
-    "password": "test",
-    "captchaCode": "1234"
+    "otp": "1234"
   },
   "RegisterRequest": {
     "idType": "CITIZEN",
@@ -132,8 +131,7 @@
     "dob": "12-11-1990",
     "username": "customerusername",
     "password": "test",
-    "confirmPassword": "test",
-    "mobileOtp": "1234"
+    "confirmPassword": "test"
   },
   "PlanResponse": [
     {

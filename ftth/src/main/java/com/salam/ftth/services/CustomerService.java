@@ -11,10 +11,9 @@ import com.salam.ftth.adapter.model.response.VerifyBySmsResponse;
 import com.salam.ftth.config.exception.AppError;
 import com.salam.ftth.db.entity.Role;
 import com.salam.ftth.db.entity.User;
-import com.salam.ftth.model.RequestContext;
 import com.salam.ftth.model.UserMetaInfo;
-import com.salam.ftth.model.request.CustomerProfileRequest;
 import com.salam.ftth.model.request.IDType;
+import com.salam.ftth.model.request.OtpVerifyRequest;
 import com.salam.ftth.model.request.RegisterRequest;
 import com.salam.ftth.model.response.CustomerSubscription;
 import com.salam.ftth.repos.RoleRepository;
@@ -26,12 +25,12 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import java.sql.Timestamp;
 import java.util.List;
 
 import static com.salam.ftth.config.exception.AppErrors.*;
+import static java.lang.Integer.parseInt;
 
 @Slf4j
 @Service
@@ -43,6 +42,7 @@ public class CustomerService {
     final RoleRepository roleRepository;
     final ClientMockAdapter clientMockAdapter;
     final BCryptPasswordEncoder passwordEncoder;
+    final OtpService otpService;
 
 
     public VerifyBySmsResponse createPhoneVerifyRequest(String mobile) {
@@ -52,23 +52,54 @@ public class CustomerService {
         });
     }
 
-    public boolean verifyBySms(String otp, RequestContext requestContext) {
-        var metaInfo = requestContext.getMeta();
-        var verifyResponse = metaInfo.getVerifyInfo();
+    public void register(RegisterRequest registerRequest) {
+        var user = new User();
+        user.setName(registerRequest.getFullName());
+        user.setEmail(registerRequest.getEmail());
+        user.setPhone(registerRequest.getMobile());
+        user.setPassword(
+                passwordEncoder.encode(registerRequest.getPassword())
+        );
+        user.setActive(false); // activate only after otp verification
 
-        if (!otp.equals(verifyResponse.getCaptchaCode())) {
+        var secret = otpService.generateSecret();
+        var totp = otpService.generateCode(secret);
+        user.setTotp(secret);
+
+        var meta = new UserMetaInfo(
+                IDType.valueOf(registerRequest.getIdType()),
+                registerRequest.getDob(),
+                registerRequest.getId()
+        );
+        user.setMeta(meta);
+
+        var roles = roleRepository.findAllByRole(Role.RoleType.CUSTOMER);
+        user.setRoles(roles);
+
+        try {
+            userRepository.save(user);
+        } catch (DataIntegrityViolationException e) {
+            throw AppError.create(USER_EXISTS);
+        }
+
+        // send otp request
+    }
+
+    public void verifyRegister(OtpVerifyRequest request) {
+        var username = request.getUsername();
+        var userOpt = userRepository.findUserByPrincipal(username, false);
+        if (userOpt.isEmpty()) {
             throw AppError.create(CUSTOMER_OTP_INVALID);
         }
 
-        return true;
-    }
+        // verify otp
+        var user = userOpt.get();
+        if (!otpService.verifyCode(user.getTotp(), parseInt(request.getOtp()))) {
+            throw AppError.create(CUSTOMER_OTP_INVALID);
+        }
 
-    public boolean changeCustomerPhone(String mobile, CustomerProfileRequest request,
-                                       RequestContext requestContext) {
-        request.setMobile(mobile);
-        // TODO: set verified to false
-
-        return true;
+        user.setActive(true);
+        userRepository.save(user);
     }
 
     public List<CustomerSubscription> getCustomerSubscriptions(JwtUser user, Pageable pageable) {
@@ -88,34 +119,20 @@ public class CustomerService {
                 }).toList();
     }
 
-    public void register(RegisterRequest registerRequest) {
-        if (!StringUtils.pathEquals(registerRequest.getPassword(), registerRequest.getConfirmPassword())) {
-            throw AppError.create(PASSWORD_MISMATCH);
+    public void resendOtp(OtpVerifyRequest request) {
+        var username = request.getUsername();
+        var userOpt = userRepository.findUserByPrincipal(username, false);
+        if (userOpt.isEmpty()) {
+            throw AppError.create(USER_NOT_FOUND);
         }
 
-        var user = new User();
-        user.setName(registerRequest.getFullName());
-        user.setEmail(registerRequest.getEmail());
-        user.setPhone(registerRequest.getMobile());
-        user.setPassword(
-                passwordEncoder.encode(registerRequest.getPassword())
-        );
-        user.setActive(true);
+        var user = userOpt.get();
+        var secret = otpService.generateSecret();
+        var totp = otpService.generateCode(secret);
 
-        var meta = new UserMetaInfo(
-                IDType.valueOf(registerRequest.getIdType()),
-                registerRequest.getDob(),
-                registerRequest.getId()
-        );
-        user.setMeta(meta);
+        user.setTotp(secret);
+        userRepository.save(user);
 
-        var roles = roleRepository.findAllByRole(Role.RoleType.CUSTOMER);
-        user.setRoles(roles);
-
-        try {
-            userRepository.save(user);
-        } catch (DataIntegrityViolationException e) {
-            throw AppError.create(USER_EXISTS);
-        }
+        // send totp
     }
 }

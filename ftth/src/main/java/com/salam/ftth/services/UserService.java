@@ -16,6 +16,10 @@ public class UserService {
 
 
     public Optional<User> checkLogin(String username) {
-        return userRepository.findUserByPrincipal(username);
+        return userRepository.findUserByPrincipal(username, true);
+    }
+
+    public User save(User user) {
+        return userRepository.save(user);
     }
 }

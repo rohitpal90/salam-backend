@@ -1,9 +1,8 @@
 package com.salam.ftth.controllers;
 
+import com.salam.ftth.model.request.OtpVerifyRequest;
 import com.salam.ftth.model.request.RegisterRequest;
-import com.salam.ftth.model.response.CustomerSubscription;
 import com.salam.ftth.services.CustomerService;
-import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -11,13 +10,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springdoc.core.annotations.ParameterObject;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -52,17 +49,33 @@ public class CustomerController {
         return Map.of("message", "success");
     }
 
+    @PostMapping("/register/verify-otp")
     @Operation(
-            summary = "Get Customer subscriptions",
+            summary = "Verify register otp",
             responses = {
-                    @ApiResponse(responseCode = "200", ref = "SubscriptionResultResponse")
-            }
+                    @ApiResponse(responseCode = "200", ref = "SuccessResponse"),
+                    @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = {
+                    @ExampleObject(ref = "OtpVerifyRequest", name = "OtpVerifyRequest")
+            }))
     )
-    @GetMapping("/subscriptions")
-    public List<CustomerSubscription> getSubscriptions(@AuthenticationPrincipal JwtUser user,
-                                                       @ParameterObject Pageable pageable) {
-        var pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
-        return customerService.getCustomerSubscriptions(user, pageRequest);
+    public Object verifyRegister(@org.springframework.web.bind.annotation.RequestBody
+                                 @Valid OtpVerifyRequest request) {
+        customerService.verifyRegister(request);
+        return Map.of("message", "success");
     }
 
+//    @Operation(
+//            summary = "Get Customer subscriptions",
+//            responses = {
+//                    @ApiResponse(responseCode = "200", ref = "SubscriptionResultResponse")
+//            }
+//    )
+//    @GetMapping("/subscriptions")
+//    public List<CustomerSubscription> getSubscriptions(@AuthenticationPrincipal JwtUser user,
+//                                                       @ParameterObject Pageable pageable) {
+//        var pageRequest = PageRequest.of(pageable.getPageNumber(), pageable.getPageSize());
+//        return customerService.getCustomerSubscriptions(user, pageRequest);
+//    }
 }

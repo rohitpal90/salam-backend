@@ -2,6 +2,7 @@ package com.salam.ftth.controllers;
 
 import com.salam.ftth.config.auth.LoginService;
 import com.salam.ftth.model.request.LoginRequest;
+import com.salam.ftth.model.request.OtpVerifyRequest;
 import eu.fraho.spring.securityJwt.base.dto.AuthenticationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -10,7 +11,6 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,7 +27,7 @@ public class LoginController {
 
     @PostMapping("/login")
     @Operation(
-            summary = "Login",
+            summary = "Check credentials and generate otp",
             responses = {
                     @ApiResponse(responseCode = "200", ref = "SuccessResponse"),
                     @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
@@ -43,21 +43,20 @@ public class LoginController {
         return Map.of("message", "success");
     }
 
-    @PostMapping("/verify/otp")
+    @PostMapping("/verify-otp")
     @Operation(
-            summary = "Verify Customer Otp",
+            summary = "Verify login otp",
             responses = {
                     @ApiResponse(responseCode = "200", ref = "SuccessResponse"),
                     @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
-                    @ApiResponse(responseCode = "404", ref = "LoginFailureResponse"),
+                    @ApiResponse(responseCode = "404", ref = "BadOtpResponse"),
             },
             requestBody = @RequestBody(content = @Content(examples = {
-                    @ExampleObject(ref = "LoginVerifyRequest", name = "LoginVerifyRequest")
+                    @ExampleObject(ref = "OtpVerifyRequest", name = "OtpVerifyRequest")
             }))
     )
-    public AuthenticationResponse login(@org.springframework.web.bind.annotation.RequestBody
-                                        @Validated(LoginRequest.LoginRequestStep2.class)
-                                        LoginRequest loginRequest) {
-        return loginService.login(loginRequest);
+    public AuthenticationResponse verifyLoginOtp(@org.springframework.web.bind.annotation.RequestBody
+                                                 @Valid OtpVerifyRequest request) {
+        return loginService.login(request);
     }
 }
