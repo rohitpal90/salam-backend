@@ -13,6 +13,7 @@ import com.salam.ftth.db.entity.Role;
 import com.salam.ftth.db.entity.User;
 import com.salam.ftth.model.UserMetaInfo;
 import com.salam.ftth.model.request.IDType;
+import com.salam.ftth.model.request.OtpOpType;
 import com.salam.ftth.model.request.OtpVerifyRequest;
 import com.salam.ftth.model.request.RegisterRequest;
 import com.salam.ftth.model.response.CustomerSubscription;
@@ -29,8 +30,8 @@ import org.springframework.stereotype.Service;
 import java.sql.Timestamp;
 import java.util.List;
 
-import static com.salam.ftth.config.exception.AppErrors.*;
-import static java.lang.Integer.parseInt;
+import static com.salam.ftth.config.exception.AppErrors.USER_EXISTS;
+import static com.salam.ftth.config.exception.AppErrors.USER_NOT_FOUND;
 
 @Slf4j
 @Service
@@ -64,7 +65,7 @@ public class CustomerService {
 
         var secret = otpService.generateSecret();
         var totp = otpService.generateCode(secret);
-        user.setTotp(secret);
+        user.setTotp(String.format("%s_%s", OtpOpType.REGISTER.name(), secret));
 
         var meta = new UserMetaInfo(
                 IDType.valueOf(registerRequest.getIdType()),
@@ -85,19 +86,7 @@ public class CustomerService {
         // send otp request
     }
 
-    public void verifyRegister(OtpVerifyRequest request) {
-        var username = request.getUsername();
-        var userOpt = userRepository.findUserByPrincipal(username, false);
-        if (userOpt.isEmpty()) {
-            throw AppError.create(CUSTOMER_OTP_INVALID);
-        }
-
-        // verify otp
-        var user = userOpt.get();
-        if (!otpService.verifyCode(user.getTotp(), request.getOtp())) {
-            throw AppError.create(CUSTOMER_OTP_INVALID);
-        }
-
+    public void verifyUser(User user) {
         user.setActive(true);
         userRepository.save(user);
     }

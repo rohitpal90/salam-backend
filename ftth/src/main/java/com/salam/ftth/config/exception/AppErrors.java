@@ -16,7 +16,7 @@ public enum AppErrors implements AppErrorStruct {
     BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid username or password"),
     // guard errors
     NO_APPOINTMENTS_FOUND(HttpStatus.BAD_REQUEST, "No appointments found"),
-    CUSTOMER_OTP_INVALID(HttpStatus.BAD_REQUEST, "Invalid OTP"),
+    INVALID_OTP(HttpStatus.BAD_REQUEST, "Invalid OTP"),
     INVALID_STATE(HttpStatus.BAD_REQUEST, "Invalid state"),
     PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "Password mismatch");
 

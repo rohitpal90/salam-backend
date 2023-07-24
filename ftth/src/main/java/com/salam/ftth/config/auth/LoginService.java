@@ -3,14 +3,13 @@ package com.salam.ftth.config.auth;
 import com.nimbusds.jose.JOSEException;
 import com.salam.ftth.config.exception.AppError;
 import com.salam.ftth.model.request.LoginRequest;
-import com.salam.ftth.model.request.OtpVerifyRequest;
+import com.salam.ftth.model.request.OtpOpType;
 import com.salam.ftth.services.OtpService;
 import com.salam.ftth.services.UserService;
 import eu.fraho.spring.securityJwt.base.dto.AccessToken;
 import eu.fraho.spring.securityJwt.base.dto.AuthenticationResponse;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import eu.fraho.spring.securityJwt.base.service.JwtTokenService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import static com.salam.ftth.config.exception.AppErrors.BAD_CREDENTIALS;
-import static com.salam.ftth.config.exception.AppErrors.CUSTOMER_OTP_INVALID;
 
 @Component
 @RequiredArgsConstructor
@@ -56,23 +54,12 @@ public class LoginService {
 
         // TODO: send otp request
 
-        user.setTotp(secret);
+        user.setTotp(String.format("%s_%s", OtpOpType.LOGIN.name(), secret));
         userService.save(user);
     }
 
     @SneakyThrows
-    public AuthenticationResponse login(@Valid OtpVerifyRequest request) throws AuthenticationException {
-        var userOpt = userService.checkLogin(request.getUsername());
-        if (userOpt.isEmpty()) {
-            throw AppError.create(CUSTOMER_OTP_INVALID);
-        }
-
-        var user = userOpt.get();
-        var userDetails = UserDetailService.buildJwtUser(user);
-        if (!otpService.verifyCode(user.getTotp(), request.getOtp())) {
-            throw AppError.create(CUSTOMER_OTP_INVALID);
-        }
-
+    public AuthenticationResponse login(JwtUser userDetails) throws AuthenticationException {
         var authentication = new UsernamePasswordAuthenticationToken(
                 userDetails.getUsername(),
                 userDetails.getPassword(),
@@ -93,6 +80,5 @@ public class LoginService {
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();
-
     }
 }

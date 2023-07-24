@@ -24,7 +24,17 @@
     "state": "INSTALLATION_SCHEDULE",
     "reqId": "2303290000000001"
   },
-  "AuthenticationSuccessResponse": {
+  "LoginOtpSuccessResponse": {
+    "accessToken": {
+      "token": "eyJhbGciOiJSUzI1NiJ9....",
+      "expiresIn": 3600
+    },
+    "refreshToken": {
+      "token": "vWNU7V5Pjqy....VLPFR5MTcIjoXHe",
+      "expiresIn": 86400
+    }
+  },
+  "RegisterOtpSuccessResponse": {
     "accessToken": {
       "token": "eyJhbGciOiJSUzI1NiJ9....",
       "expiresIn": 3600
@@ -118,9 +128,15 @@
     "username": "+9660501235679",
     "password": "test"
   },
-  "OtpVerifyRequest": {
+  "LoginOtpVerifyRequest": {
     "username": "+9660501235679",
-    "otp": "1234"
+    "otp": "1234",
+    "operation": "login"
+  },
+  "RegisterOtpVerifyRequest": {
+    "username": "+9660501235679",
+    "otp": "1234",
+    "operation": "register"
   },
   "RegisterRequest": {
     "idType": "CITIZEN",
@@ -130,8 +146,7 @@
     "email": "customertest@gmail.com",
     "dob": "12-11-1990",
     "username": "customerusername",
-    "password": "test",
-    "confirmPassword": "test"
+    "password": "test"
   },
   "PlanResponse": [
     {

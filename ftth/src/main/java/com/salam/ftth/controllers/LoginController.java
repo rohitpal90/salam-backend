@@ -2,8 +2,6 @@ package com.salam.ftth.controllers;
 
 import com.salam.ftth.config.auth.LoginService;
 import com.salam.ftth.model.request.LoginRequest;
-import com.salam.ftth.model.request.OtpVerifyRequest;
-import eu.fraho.spring.securityJwt.base.dto.AuthenticationResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -41,22 +39,5 @@ public class LoginController {
                              @Valid LoginRequest loginRequest) {
         loginService.checkLogin(loginRequest);
         return Map.of("message", "success");
-    }
-
-    @PostMapping("/verify-otp")
-    @Operation(
-            summary = "Verify login otp",
-            responses = {
-                    @ApiResponse(responseCode = "200", ref = "SuccessResponse"),
-                    @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
-                    @ApiResponse(responseCode = "404", ref = "BadOtpResponse"),
-            },
-            requestBody = @RequestBody(content = @Content(examples = {
-                    @ExampleObject(ref = "OtpVerifyRequest", name = "OtpVerifyRequest")
-            }))
-    )
-    public AuthenticationResponse verifyLoginOtp(@org.springframework.web.bind.annotation.RequestBody
-                                                 @Valid OtpVerifyRequest request) {
-        return loginService.login(request);
     }
 }

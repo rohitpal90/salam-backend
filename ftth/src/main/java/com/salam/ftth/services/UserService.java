@@ -19,6 +19,10 @@ public class UserService {
         return userRepository.findUserByPrincipal(username, true);
     }
 
+    public Optional<User> checkLogin(String username, boolean isActive) {
+        return userRepository.findUserByPrincipal(username, isActive);
+    }
+
     public User save(User user) {
         return userRepository.save(user);
     }
