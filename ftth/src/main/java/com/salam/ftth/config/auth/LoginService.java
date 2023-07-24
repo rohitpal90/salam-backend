@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import static com.salam.ftth.config.exception.AppErrors.BAD_CREDENTIALS;
 import static com.salam.ftth.config.exception.AppErrors.CUSTOMER_OTP_INVALID;
-import static java.lang.Integer.parseInt;
 
 @Component
 @RequiredArgsConstructor
@@ -70,7 +69,7 @@ public class LoginService {
 
         var user = userOpt.get();
         var userDetails = UserDetailService.buildJwtUser(user);
-        if (!otpService.verifyCode(user.getTotp(), parseInt(request.getOtp()))) {
+        if (!otpService.verifyCode(user.getTotp(), request.getOtp())) {
             throw AppError.create(CUSTOMER_OTP_INVALID);
         }
 

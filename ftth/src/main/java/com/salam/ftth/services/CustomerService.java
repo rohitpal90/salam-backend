@@ -94,7 +94,7 @@ public class CustomerService {
 
         // verify otp
         var user = userOpt.get();
-        if (!otpService.verifyCode(user.getTotp(), parseInt(request.getOtp()))) {
+        if (!otpService.verifyCode(user.getTotp(), request.getOtp())) {
             throw AppError.create(CUSTOMER_OTP_INVALID);
         }
 

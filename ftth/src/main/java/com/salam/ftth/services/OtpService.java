@@ -33,8 +33,8 @@ public class OtpService {
         return code;
     }
 
-    public boolean verifyCode(String secret, int code) {
-        if (code == 1234) { // TODO: change this
+    public boolean verifyCode(String secret, String code) {
+        if (code.equals("1234")) { // TODO: change this
             return true;
         }
 
