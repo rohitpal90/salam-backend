@@ -12,7 +12,7 @@ import org.hibernate.annotations.Type;
 
 @Data
 @Entity
-@Table(name = "plan")
+@Table(name = "plans")
 public class Plan {
 
     @Id

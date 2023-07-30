@@ -12,13 +12,13 @@ import java.util.List;
 @Repository
 public interface PlanRepository extends PagingAndSortingRepository<Plan, Long> {
 
-    @Query(value = "select p.* from plan p where " +
+    @Query(value = "select p.* from plans p where " +
             "((JSON_VALUE(p.meta, '$.category') = :#{#f.category} or (:#{#f.category} is null)) and " +
             "(JSON_VALUE(p.meta, '$.planType') = :#{#f.type} or (:#{#f.type} is null)) and " +
             "(p.id = :#{#f.planId} or (:#{#f.planId} is null))) ", nativeQuery = true)
     List<Plan> findPlans(PlanFilterRequest f, Pageable pageable);
 
-    @Query(value = "select case when count(1) > 0 then 'true' else 'false' end from plan p " +
+    @Query(value = "select case when count(1) > 0 then 'true' else 'false' end from plans p " +
             "where p.id = :planId", nativeQuery = true)
     boolean existsByPlanId(String planId);
 }

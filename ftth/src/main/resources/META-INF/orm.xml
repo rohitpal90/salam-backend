@@ -14,7 +14,7 @@
             <basic name="created">
                 <column name="created_at" />
             </basic>
-            <basic name="user_id">
+            <basic name="userId">
                 <column name="user_id"/>
             </basic>
             <basic name="username">
