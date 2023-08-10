@@ -1,0 +1,194 @@
+{
+  "SuccessResponse": {
+    "message": "success"
+  },
+  "LoginSuccessResponse": {
+    "message": "success"
+  },
+  "LoginFailureResponse": {
+    "message": "User not found"
+  },
+  "UnauthenticatedResponse": {
+    "message": "Unauthenticated"
+  },
+  "CustomerSuccessResponse": {
+    "message": "success",
+    "state": "MOBILE_VERIFICATION",
+    "reqId": "2303290000000001"
+  },
+  "BadOtpResponse": {
+    "message": "Invalid OTP"
+  },
+  "VerifySuccessResponse": {
+    "message": "success",
+    "state": "INSTALLATION_SCHEDULE",
+    "reqId": "2303290000000001"
+  },
+  "LoginOtpSuccessResponse": {
+    "accessToken": {
+      "token": "eyJhbGciOiJSUzI1NiJ9....",
+      "expiresIn": 3600
+    },
+    "refreshToken": {
+      "token": "vWNU7V5Pjqy....VLPFR5MTcIjoXHe",
+      "expiresIn": 86400
+    }
+  },
+  "RegisterOtpSuccessResponse": {
+    "accessToken": {
+      "token": "eyJhbGciOiJSUzI1NiJ9....",
+      "expiresIn": 3600
+    },
+    "refreshToken": {
+      "token": "vWNU7V5Pjqy....VLPFR5MTcIjoXHe",
+      "expiresIn": 86400
+    }
+  },
+  "SummaryResponse": {
+    "billingInfo": {
+      "vat": "35 SAR",
+      "total": "36 SAR",
+      "monthly": "1 SAR"
+    },
+    "customerInfo": {
+      "id": "1023456789",
+      "mobile": "+966512345678",
+      "odbPlateNumber": "test143",
+      "dob": "22-03-2023",
+      "lat": 0,
+      "lng": 0
+    },
+    "appointment": {
+      "taskType": "T1002",
+      "appointmentDatetime": "2022-09-11,18:00 - 21:00",
+      "teamId": "84",
+      "slotId": "1"
+    },
+    "plan": {
+      "planId": "1903",
+      "provider": "salam"
+    },
+    "paymentInfo": {
+      "paymentMethod": "sadad"
+    },
+    "reqId": "2303290000000004"
+  },
+  "AppointmentBookResponse": {
+    "message": "success",
+    "state": "REQUEST_CONFIRMATION",
+    "reqId": "2303290000000003"
+  },
+  "RequestNotFoundResponse": {
+    "message": "Request Not Found"
+  },
+  "CustomerReviewResponse": {
+    "message": "success",
+    "state": "ACCOUNT_CREATION",
+    "reqId": "2303290000000003"
+  },
+  "CustomerConfirmResponse": {
+    "message": "success",
+    "state": "REVIEW",
+    "reqId": "2303290000000003"
+  },
+  "CustomerCancelResponse": {
+    "message": "success",
+    "state": "CANCELLED",
+    "reqId": "2303290000000003"
+  },
+  "BadRequestResponse": {
+    "message": "Form validation errors",
+    "error": {
+      "data": {
+        "field-1": "form field error message"
+      }
+    }
+  },
+  "EventResultResponse": {
+    "message": "success",
+    "state": "SUCCESS",
+    "reqId": "2307101000000001"
+  },
+  "SummarySuccessResponse": {
+    "customerInfo": {
+      "mobile": "+966512345678",
+      "fullName": "string",
+      "email": "string@gmail.com",
+      "username": "string"
+    },
+    "reqId": "2307101000000001"
+  },
+  "NotFoundResponse": {
+    "message": "Not Found"
+  },
+  "InvalidStateResponse": {
+    "message": "Invalid state"
+  },
+  "LoginRequest": {
+    "username": "+9660501235679",
+    "password": "test"
+  },
+  "LoginOtpVerifyRequest": {
+    "username": "+9660501235679",
+    "otp": "1234",
+    "operation": "login"
+  },
+  "RegisterOtpVerifyRequest": {
+    "username": "+9660501235679",
+    "otp": "1234",
+    "operation": "register"
+  },
+  "RegisterRequest": {
+    "idType": "CITIZEN",
+    "id": "2467902658",
+    "mobile": "+966512345678",
+    "fullName": "customerfullname",
+    "email": "customertest@gmail.com",
+    "dob": "12-11-1990",
+    "username": "customerusername",
+    "password": "test"
+  },
+  "PlanResponse": [
+    {
+      "openAccessId": "9902",
+      "meta": {
+        "downloadSpeed": "240",
+        "name": "Fiber Prepaid,240",
+        "planType": "prepaid",
+        "price": "1 SAR",
+        "uploadSpeed": "60",
+        "description": "Unlimited, 12 Months + 3 Months free",
+        "openAccessId": null,
+        "category": "ftth",
+        "addons": [
+          {
+            "type": "orbit",
+            "title": "Orbit Family Plan",
+            "desc": "Orbit Family Pack Free Upon Order",
+            "price": "Free"
+          }
+        ]
+      },
+      "planId": 1903
+    }
+  ],
+  "SubscriptionResultResponse": [
+    {
+      "orderId": "2307201000000001",
+      "state": "ACCOUNT_CREATION",
+      "planInfo": {
+        "name": "Fiber Prepaid,240",
+        "price": "1 SAR",
+        "category": "ftth",
+        "planType": "prepaid",
+        "description": "Unlimited, 12 Months + 3 Months free",
+        "uploadSpeed": "60",
+        "downloadSpeed": "240"
+      },
+      "createdAt": "2023-07-20T07:28:48Z"
+    }
+  ],
+  "UserAlreadyExistResponse": {
+    "message": "User with this mobile or email already exists"
+  }
+}

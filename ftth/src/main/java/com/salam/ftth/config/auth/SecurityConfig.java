@@ -58,7 +58,10 @@ public class SecurityConfig extends JwtSecurityConfig {
                 .and()
                 .authorizeHttpRequests(registry -> {
                     registry.requestMatchers("/swagger-ui/**","/v3/api-docs/**").permitAll();
-                    registry.requestMatchers("/**").permitAll();
+                    registry.requestMatchers("/auth/**",
+                            "/otp/verify",
+                            "/customers/register",
+                            "/plans").permitAll();
                     registry.anyRequest().authenticated();
                 })
                 .addFilterBefore(authenticationTokenFilterBean(), UsernamePasswordAuthenticationFilter.class);

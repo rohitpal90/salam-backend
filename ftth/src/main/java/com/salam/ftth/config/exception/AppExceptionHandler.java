@@ -1,7 +1,10 @@
 package com.salam.ftth.config.exception;
 
 import com.salam.ftth.model.mappers.RequestHeaderConverter;
-import com.salam.libs.exceptions.RequestNotFoundException;
+import com.salam.ftth.model.response.ErrorInfo;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ProblemDetail;
@@ -13,7 +16,6 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.NoHandlerFoundException;
 
@@ -24,8 +26,13 @@ import java.util.Objects;
 
 import static com.salam.ftth.config.exception.AppErrors.*;
 
+@Slf4j
 @RestControllerAdvice
 public class AppExceptionHandler {
+
+    @Autowired
+    MessageSource messageSource;
+
 
     @ExceptionHandler(AppError.class)
     protected ResponseEntity<?> handleAppError(AppError ex) {
@@ -38,7 +45,7 @@ public class AppExceptionHandler {
         return appErrorToResponseEntity(error);
     }
 
-    @ExceptionHandler(AccessDeniedException.class)
+    @ExceptionHandler({ AccessDeniedException.class })
     public ResponseEntity<?> handleForbidden() {
         AppError error = AppError.create("", FTTH_APP_ERROR);
         return appErrorToResponseEntity(error);
@@ -60,16 +67,12 @@ public class AppExceptionHandler {
         });
 
         var error = AppError.create(BAD_REQUEST, data, null);
+        error.getType().setMessageKey("com.constraint.FormValidation.message");
         return appErrorToResponseEntity(error);
     }
 
-    @ExceptionHandler(RequestNotFoundException.class)
-    public ResponseEntity<?> handleRequestNotFoundException() {
-        return appErrorToResponseEntity(AppError.create(REQUEST_NOT_FOUND));
-    }
-
     @ExceptionHandler(Exception.class)
-    protected ResponseEntity<?> handleGlobalException(Exception ex, WebRequest req) {
+    protected ResponseEntity<?> handleGlobalException(Exception ex) {
         AppError error;
 
         if (ex instanceof ErrorResponse errorResponse) {
@@ -81,6 +84,8 @@ public class AppExceptionHandler {
         }
 
         error = AppError.create("", FTTH_APP_ERROR);
+
+        log.error("error", ex);
         return appErrorToResponseEntity(error);
     }
 
@@ -91,18 +96,16 @@ public class AppExceptionHandler {
     }
 
     private ResponseEntity<?> appErrorToResponseEntity(AppError ex) {
-        final AppErrorStruct type = ex.getType();
+        final AppErrors type = ex.getType();
         return appErrorToResponseEntity(ex, HttpStatusCode.valueOf(type.httpStatus().value()));
     }
 
     private ResponseEntity<?> appErrorToResponseEntity(AppError ex, HttpStatusCode code) {
-        Map<Object, Object> map = new HashMap<>();
-        map.put("message", ex.getMessage());
+        var errorInfo = new ErrorInfo(ex.getLocalizedMessage(messageSource));
         if (Objects.nonNull(ex.getData())) {
-            map.put("error", Map.of("data", ex.getData()));
+            errorInfo.setError(Map.of("data", ex.getData()));
         }
 
-        return ResponseEntity.status(code).body(map);
+        return ResponseEntity.status(code).body(errorInfo);
     }
-
 }

@@ -19,19 +19,18 @@ public class VerifySmsGuard extends GuardHandler {
     @Override
     public void handle(StateContext<String, String> context) {
         var stateMachine = context.getStateMachine();
-        var requestContext = RequestContext.<RequestContext>fromStateMachine(stateMachine);
-        var verifyCustomerRequest = requestContext.getVerifyInfo();
-
-        String mobileOtp = verifyCustomerRequest.getMobileOtp();
-        customerService.verifyBySms(mobileOtp, requestContext);
+        RequestContext requestContext = RequestContext.fromStateMachine(stateMachine);
+//        var verifyCustomerRequest = requestContext.getVerifyInfo();
+//
+//        String mobileOtp = verifyCustomerRequest.getMobileOtp();
+//        customerService.verifyBySms(mobileOtp, requestContext);
 
         requestContext.setVerified(true);
-        requestContext.setToStateMachineState(stateMachine);;
+        requestContext.setToStateMachineState(stateMachine);
     }
 
     @Override
     public String forType() {
         return Event.VERIFY_MOBILE.name();
     }
-
 }

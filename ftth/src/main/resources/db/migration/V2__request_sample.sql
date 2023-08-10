@@ -1,0 +1,2 @@
+INSERT INTO request (state,order_id,user_id,meta,created_at,updated_at,finished_at) VALUES
+	 ('ACCOUNT_CREATION','2307201000000001',3,'{"planInfo": {"planId": "1903", "provider": "salam"}, "verified": false, "verifyInfo": null, "appointment": null, "customerInfo": {"id": "2467902658", "dob": "12-11-1990", "email": "customertest@gmail.com", "idType": "CITIZEN", "mobile": "+966512345678", "fullName": "customerfullname", "password": null, "username": "customerusername"}}','2023-07-20 12:58:48','2023-07-20 12:58:48',NULL);

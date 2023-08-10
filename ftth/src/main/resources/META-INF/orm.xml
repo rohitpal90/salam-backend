@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd"
+                 version="1.0">
+    <description>JPA Mapping file</description>
+
+    <entity class="eu.fraho.spring.securityJwt.hibernate.dto.RefreshTokenEntity">
+        <table name="jwt_refresh_tokens"/>
+        <attributes>
+            <id name="id">
+                <generated-value strategy="IDENTITY"/>
+            </id>
+            <basic name="created">
+                <column name="created_at" />
+            </basic>
+            <basic name="userId">
+                <column name="user_id"/>
+            </basic>
+            <basic name="username">
+                <column name="username"/>
+            </basic>
+            <basic name="token">
+                <column name="token"/>
+            </basic>
+        </attributes>
+    </entity>
+
+    <entity class="com.salam.libs.sm.entity.Request">
+        <table name="requests" />
+    </entity>
+    <entity class="com.salam.libs.sm.entity.Transition">
+        <table name="transitions" />
+    </entity>
+    <entity class="com.salam.ftth.db.entity.User">
+        <table name="users" />
+    </entity>
+    <entity class="com.salam.ftth.db.entity.Role">
+        <table name="roles" />
+    </entity>
+    <entity class="com.salam.ftth.db.entity.Plan">
+        <table name="plans" />
+    </entity>
+</entity-mappings>

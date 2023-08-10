@@ -10,5 +10,9 @@ public enum Event {
     APPROVE,
     INSTALLED,
     REJECT,
-    COMPLETE
+    COMPLETE,
+    REG_STEP_1,
+    REG_STEP_2,
+    REG_STEP_3,
+    REG_STEP_4
 }

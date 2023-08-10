@@ -1,21 +1,22 @@
-package com.salam.ftth.config.auth;
+package com.salam.ftth.services;
 
 import dev.samstevens.totp.code.CodeGenerator;
 import dev.samstevens.totp.code.CodeVerifier;
 import dev.samstevens.totp.secret.SecretGenerator;
 import dev.samstevens.totp.spring.autoconfigure.TotpProperties;
 import dev.samstevens.totp.time.TimeProvider;
-import eu.fraho.spring.securityJwt.base.service.TotpService;
 import lombok.AllArgsConstructor;
 import lombok.SneakyThrows;
-import org.springframework.stereotype.Component;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
 
 import static org.apache.commons.lang3.StringUtils.leftPad;
 
 
-@Component
+@Slf4j
+@Service
 @AllArgsConstructor
-public class OtpService implements TotpService {
+public class OtpService {
 
     final SecretGenerator secretGenerator;
     final CodeVerifier codeVerifier;
@@ -26,16 +27,20 @@ public class OtpService implements TotpService {
 
     @SneakyThrows
     public String generateCode(String secret) {
-        return codeGenerator.generate(secret, Math.floorDiv(timeProvider.getTime(), getExpiration()));
+        var code = codeGenerator.generate(secret, Math.floorDiv(timeProvider.getTime(), getExpiration()));
+        log.info("generated totp code: {}", code);
+        return code;
     }
 
-    @Override
-    public boolean verifyCode(String secret, int code) {
+    public boolean verifyCode(String secret, String code) {
+        if (code.equals("1234")) { // TODO: change this
+            return true;
+        }
+
         var fmtCode = leftPad(String.valueOf(code), getOtpLength(), '0');
         return codeVerifier.isValidCode(secret, fmtCode);
     }
 
-    @Override
     public String generateSecret() {
         return secretGenerator.generate();
     }

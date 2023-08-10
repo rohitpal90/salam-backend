@@ -19,6 +19,7 @@ import reactor.core.publisher.Mono;
 @Service
 @RequiredArgsConstructor
 public class StateMachineAdapter {
+
     private final StateMachineFactory<String, String> stateMachineFactory;
     private final StateMachinePersisterDelegate persister;
     private final WorkflowProperties workflowProperties;

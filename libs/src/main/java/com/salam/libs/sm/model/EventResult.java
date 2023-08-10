@@ -37,4 +37,8 @@ public class EventResult {
     public boolean hasStateMachineError() {
         return this.sm.hasStateMachineError();
     }
+
+    public StateMachine<String, String> getSm() {
+        return sm;
+    }
 }
