@@ -1,6 +1,8 @@
 package com.salam.ftth.model;
 
 import com.salam.ftth.model.request.AppointmentBookRequest;
+import com.salam.ftth.model.request.CustomerProfileRequest;
+import com.salam.ftth.model.request.VerifyCustomerRequest;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 
 public class RequestContext extends com.salam.libs.sm.model.RequestContext<RequestMetaInfo> {
@@ -8,6 +10,8 @@ public class RequestContext extends com.salam.libs.sm.model.RequestContext<Reque
     private JwtUser actor;
 
     // requests
+    private CustomerProfileRequest customerProfileRequest;
+    private VerifyCustomerRequest verifyCustomerRequest;
     private AppointmentBookRequest appointmentBookRequest;
 
     public static final String KEY = "requestContext";
@@ -41,9 +45,25 @@ public class RequestContext extends com.salam.libs.sm.model.RequestContext<Reque
         this.appointmentBookRequest = appointmentBookRequest;
     }
 
+    public CustomerProfileRequest getCustomerProfileRequest() {
+        return customerProfileRequest;
+    }
+
+    public void setCustomerProfileRequest(CustomerProfileRequest customerProfileRequest) {
+        this.customerProfileRequest = customerProfileRequest;
+    }
+
     @Override
     public Class<RequestMetaInfo> getMetaClass() {
         return RequestMetaInfo.class;
+    }
+
+    public void setVerifyCustomerRequest(VerifyCustomerRequest verifyCustomerRequest) {
+        this.verifyCustomerRequest = verifyCustomerRequest;
+    }
+
+    public VerifyCustomerRequest getVerifyCustomerRequest() {
+        return verifyCustomerRequest;
     }
 }
 

@@ -14,6 +14,8 @@ public enum AppErrors implements AppErrorStruct {
     USER_EXISTS(HttpStatus.BAD_REQUEST, "User with this phone or email already exists"),
     REQUEST_NOT_FOUND(HttpStatus.NOT_FOUND, "Request not found"),
     BAD_CREDENTIALS(HttpStatus.UNAUTHORIZED, "Invalid username or password"),
+    PLAN_NOT_FOUND(HttpStatus.BAD_REQUEST, "Plan not found"),
+
     // guard errors
     NO_APPOINTMENTS_FOUND(HttpStatus.BAD_REQUEST, "No appointments found"),
     INVALID_OTP(HttpStatus.BAD_REQUEST, "Invalid OTP"),

@@ -1,12 +1,15 @@
 package com.salam.ftth.config;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.fasterxml.jackson.databind.introspect.AnnotatedClass;
 import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
+import com.salam.ftth.config.auth.UserDetailService;
 import com.salam.ftth.db.entity.User;
 import com.salam.ftth.model.request.AuthenticationRequestPOJOBuilder;
 import com.salam.libs.annotations.EnableSalamWorkflow;
 import eu.fraho.spring.securityJwt.base.dto.AuthenticationRequest;
+import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.openfeign.EnableFeignClients;
@@ -52,6 +55,7 @@ public class AppConfig {
     @Bean
     public Jackson2ObjectMapperBuilder jackson2ObjectMapperBuilder() {
         return new Jackson2ObjectMapperBuilder()
+                .serializationInclusion(JsonInclude.Include.NON_NULL)
                 .annotationIntrospector(new JacksonAnnotationIntrospector() {
                     @Override
                     public Class<?> findPOJOBuilder(AnnotatedClass ac) {
@@ -74,10 +78,12 @@ public class AppConfig {
     }
 
     @Bean
-    public User wfUser(EntityManager em, @Value("${app.wf.user}") String ftthAppUser) {
-        return em.createQuery("from User u join fetch u.roles where u.email = :email", User.class)
+    public JwtUser wfUser(EntityManager em, @Value("${app.wf.user}") String ftthAppUser) {
+        var user = em.createQuery("from User u join fetch u.roles where u.email = :email", User.class)
                 .setParameter("email", ftthAppUser)
                 .getResultList().get(0);
+
+        return UserDetailService.buildJwtUser(user);
     }
 
     @Bean

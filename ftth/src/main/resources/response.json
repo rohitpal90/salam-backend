@@ -11,10 +11,10 @@
   "UnauthenticatedResponse": {
     "message": "Unauthenticated"
   },
-  "CustomerSuccessResponse": {
+  "CustomerProfileSuccessResponse": {
     "message": "success",
     "state": "MOBILE_VERIFICATION",
-    "reqId": "2303290000000001"
+    "reqId": "2308131000000026"
   },
   "BadOtpResponse": {
     "message": "Invalid OTP"
@@ -190,5 +190,33 @@
   ],
   "UserAlreadyExistResponse": {
     "message": "User with this mobile or email already exists"
+  },
+  "NewOrderRequest": {
+    "id": "1223456789",
+    "dob": "02-2022"
+  },
+  "VerifyCustomerRequest": {
+    "otp": "1234"
+  },
+  "VerifyCustomerResponse": {
+    "data": {
+      "firstName": "Ahmed",
+      "lastName": "Mohammed",
+      "nationality": "Saudi",
+      "city": "Riyadh",
+      "dob": "02-2022"
+    },
+    "message": "success",
+    "state": "CONTACT_COLLECTION",
+    "reqId": "2308131000000028"
+  },
+  "ContactInfoRequest": {
+    "email": "someone@yopmail.com",
+    "mobile": "+966512375471"
+  },
+  "ContactInfoResponse": {
+    "message": "success",
+    "state": "COVERAGE_VERIFICATION",
+    "reqId": "2308131000000028"
   }
 }

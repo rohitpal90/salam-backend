@@ -1,10 +1,11 @@
 package com.salam.ftth.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NonNull;
 
 @Data
+@AllArgsConstructor
 public class PlanInfo {
-    private @NonNull String planId;
-    private @NonNull String provider;
+    private String planId;
+    private String provider;
 }

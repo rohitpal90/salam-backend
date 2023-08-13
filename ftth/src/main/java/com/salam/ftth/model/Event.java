@@ -5,6 +5,7 @@ public enum Event {
     VERIFY_MOBILE,
     VERIFY_EMAIL,
     SCHEDULE,
+    ADD_CONTACT,
     CUSTOMER_CONFIRM,
     CUSTOMER_CANCEL,
     APPROVE,

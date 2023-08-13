@@ -1,15 +1,12 @@
 package com.salam.ftth.services;
 
-import com.salam.ftth.db.entity.User;
 import com.salam.ftth.model.Event;
 import com.salam.ftth.model.PlanInfo;
 import com.salam.ftth.model.RequestContext;
 import com.salam.ftth.model.RequestMetaInfo;
 import com.salam.ftth.model.request.CustomerProfileRequest;
-import com.salam.ftth.model.request.IDType;
-import com.salam.ftth.model.request.RegisterRequest;
+import com.salam.ftth.model.response.EventResult;
 import com.salam.libs.sm.config.StateMachineAdapter;
-import com.salam.libs.sm.model.EventResult;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -26,10 +23,11 @@ public class StateMachineService {
     private final StateMachineAdapter stateMachineAdapter;
 
     public EventResult trigger(Event event, RequestContext requestContext) {
-        return stateMachineAdapter.trigger(event.name(), requestContext).block();
+        var eventResult = stateMachineAdapter.trigger(event.name(), requestContext).block();
+        return new EventResult(eventResult);
     }
 
-    private final User wfUser;
+    private final JwtUser wfUser;
 
     @PersistenceContext
     private EntityManager em;
@@ -58,25 +56,13 @@ public class StateMachineService {
         return Optional.of(request);
     }
 
-    public RequestContext initiate(RegisterRequest registerRequest,
-                                   PlanInfo planInfo,
-                                   JwtUser author) {
+    public RequestContext initiate(CustomerProfileRequest customerInfo, PlanInfo planInfo) {
         var orderId = generateOrderId();
         var metaInfo = new RequestMetaInfo();
-
-        var customerInfo = new CustomerProfileRequest();
-        customerInfo.setId(registerRequest.getId());
-        customerInfo.setMobile(registerRequest.getMobile());
-        customerInfo.setDob(registerRequest.getDob());
-        customerInfo.setIdType(IDType.valueOf(registerRequest.getIdType()));
-        customerInfo.setFullName(registerRequest.getFullName());
-        customerInfo.setUsername(registerRequest.getUsername());
-        customerInfo.setEmail(registerRequest.getEmail());
         metaInfo.setCustomerInfo(customerInfo);
-
         metaInfo.setPlanInfo(planInfo);
 
-        var requestContext = new RequestContext(orderId, author.getId());
+        var requestContext = new RequestContext(orderId, wfUser.getId());
         requestContext.setMeta(metaInfo);
 
         var sm = stateMachineAdapter.create(requestContext);

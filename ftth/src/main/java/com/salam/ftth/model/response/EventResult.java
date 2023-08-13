@@ -18,6 +18,7 @@ public class EventResult {
 
     private final RequestContext requestContext;
     private final StateMachine<String, String> sm;
+    private Object data;
 
 
     public EventResult(com.salam.libs.sm.model.EventResult eventResult) {
@@ -58,5 +59,13 @@ public class EventResult {
 
     public String getState() {
         return sm.getState().getId();
+    }
+
+    public void setData(Object data) {
+        this.data = data;
+    }
+
+    public Object getData() {
+        return data;
     }
 }

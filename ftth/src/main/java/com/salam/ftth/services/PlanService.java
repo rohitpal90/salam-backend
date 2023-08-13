@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.salam.ftth.config.exception.AppErrors.NOT_FOUND;
+import static com.salam.ftth.config.exception.AppErrors.PLAN_NOT_FOUND;
 
 
 @Service
@@ -26,7 +26,7 @@ public class PlanService {
 
     public void checkPlan(String planId) {
         if (!planRepository.existsByPlanId(planId)) {
-            throw AppError.create("Plan not found", NOT_FOUND);
+            throw AppError.create(PLAN_NOT_FOUND);
         }
     }
 }

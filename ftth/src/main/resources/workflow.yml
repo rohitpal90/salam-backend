@@ -2,14 +2,11 @@ name: ftth
 initialState: ACCOUNT_CREATION
 transitions:
   - source: ACCOUNT_CREATION
-    target: ACCOUNT_CREATION_1
-    event: REG_STEP_1
-  - source: ACCOUNT_CREATION_1
-    target: ACCOUNT_CREATION_2
-    event: REG_STEP_2
-  - source: ACCOUNT_CREATION_2
     target: MOBILE_VERIFICATION
-    event: REG_STEP_3
+    event: CREATE_ACCOUNT
   - source: MOBILE_VERIFICATION
-    target: INSTALLATION_SCHEDULE
+    target: CONTACT_COLLECTION
     event: VERIFY_MOBILE
+  - source: CONTACT_COLLECTION
+    target: COVERAGE_VERIFICATION
+    event: ADD_CONTACT

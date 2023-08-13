@@ -61,6 +61,7 @@ public class SecurityConfig extends JwtSecurityConfig {
                     registry.requestMatchers("/auth/**",
                             "/otp/verify",
                             "/customers/register",
+                            "/requests/**",
                             "/plans").permitAll();
                     registry.anyRequest().authenticated();
                 })
