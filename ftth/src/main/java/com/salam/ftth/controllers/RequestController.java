@@ -213,10 +213,19 @@ public class RequestController {
     @Operation(
             summary = "Register Customer request",
             responses = {
-                    @ApiResponse(responseCode = "200", ref = "CustomerCancelResponse"),
-                    @ApiResponse(responseCode = "400", ref = "InvalidStateResponse"),
-                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse")
-            }
+                    @ApiResponse(responseCode = "200", ref = "SuccessResponse"),
+                    @ApiResponse(responseCode = "400", content = @Content(
+                            mediaType = APPLICATION_JSON_VALUE,
+                            examples = {
+                                    @ExampleObject(name = "BadRequestResponse", ref = "BadRequestResponse"),
+                                    @ExampleObject(name = "UserAlreadyExistResponse", ref = "UserAlreadyExistResponse"),
+                            }
+                    )),
+                    @ApiResponse(responseCode = "404", ref = "RequestNotFoundResponse")
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = {
+                    @ExampleObject(ref = "CustomerRequestRegisterRequest", name = "CustomerRequestRegisterRequest"),
+            }))
     )
     public Object registerCustomer(@RequestParam("reqId") RequestContext requestContext,
                                    @RequestBody @Validated(value = CustomerProfileRequest.RegisterRequestGroup.class)

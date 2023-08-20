@@ -276,5 +276,9 @@
         "slotId": "3"
       }
     ]
+  },
+  "CustomerRequestRegisterRequest": {
+    "username": "someusername",
+    "password": "p@assw@49"
   }
 }
