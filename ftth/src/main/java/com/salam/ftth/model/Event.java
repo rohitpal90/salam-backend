@@ -6,6 +6,8 @@ public enum Event {
     VERIFY_EMAIL,
     SCHEDULE,
     ADD_CONTACT,
+    ADD_COVERAGE,
+    ADD_LOCATION,
     CUSTOMER_CONFIRM,
     CUSTOMER_CANCEL,
     APPROVE,

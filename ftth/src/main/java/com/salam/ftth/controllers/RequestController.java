@@ -1,9 +1,14 @@
 package com.salam.ftth.controllers;
 
+import com.salam.ftth.config.exception.AppError;
+import com.salam.ftth.config.exception.AppErrors;
 import com.salam.ftth.model.PlanInfo;
 import com.salam.ftth.model.RequestContext;
+import com.salam.ftth.model.States;
+import com.salam.ftth.model.request.AppointmentBookRequest;
 import com.salam.ftth.model.request.CustomerProfileRequest;
 import com.salam.ftth.model.request.VerifyCustomerRequest;
+import com.salam.ftth.services.CustomerService;
 import com.salam.ftth.services.StateMachineService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -15,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.Map;
 
 import static com.salam.ftth.model.Event.*;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -25,6 +31,7 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 public class RequestController {
 
     private final StateMachineService stateMachineService;
+    private final CustomerService customerService;
 
     @GetMapping("/summary")
     @Operation(
@@ -32,19 +39,28 @@ public class RequestController {
             responses = {
                     @ApiResponse(responseCode = "200", ref = "SummarySuccessResponse"),
                     @ApiResponse(responseCode = "404", ref = "RequestNotFoundResponse"),
-                    @ApiResponse(responseCode = "401", ref = "UnauthenticatedResponse"),
             }
     )
     public Object getReqInfo(@RequestParam("reqId") RequestContext requestContext) {
-        var restoreContext = stateMachineService.restore(requestContext);
-        var metaInfo = restoreContext.getMeta();
+        var sm = stateMachineService.getSm(requestContext);
+        var metaInfo = requestContext.getMeta();
 
-        return new HashMap<String, Object>() {
+        var summaryInfo = new HashMap<String, Object>() {
             {
                 put("reqId", requestContext.getOrderId());
-                put("identityInfo", metaInfo.getIdentityInfo());
+                put("state", sm.getState().getId());
             }
         };
+
+        if (metaInfo.isVerified()) {
+            summaryInfo.put("customerInfo", metaInfo.getCustomerInfo());
+        }
+
+        if (metaInfo.getAppointment() != null) {
+            summaryInfo.put("appointment", metaInfo.getAppointment());
+        }
+
+        return summaryInfo;
     }
 
     @Operation(
@@ -119,5 +135,98 @@ public class RequestController {
                           @RequestParam("reqId") RequestContext requestContext) {
         requestContext.setCustomerProfileRequest(profileRequest);
         return stateMachineService.trigger(ADD_CONTACT, requestContext);
+    }
+
+    @PostMapping("/location")
+    @Operation(
+            summary = "Collect Location info",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "LocationInfoResponse"),
+                    @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
+            },
+            requestBody = @io.swagger.v3.oas.annotations.parameters.RequestBody(content = @Content(examples = {
+                    @ExampleObject(ref = "LocationInfoRequest", name = "LocationInfoRequest")
+            }))
+    )
+    public Object location(@RequestBody
+                           @Validated(CustomerProfileRequest.LocationRequestGroup.class) CustomerProfileRequest profileRequest,
+                           @RequestParam("reqId") RequestContext requestContext) {
+        requestContext.setCustomerProfileRequest(profileRequest);
+        return stateMachineService.trigger(ADD_LOCATION, requestContext);
+    }
+
+    @PostMapping("/book")
+    @Operation(
+            summary = "Book installation appointment",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "AppointmentBookResponse"),
+                    @ApiResponse(responseCode = "400", ref = "InvalidStateResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse")
+            }
+    )
+    public Object schedule(@RequestBody @Valid AppointmentBookRequest request,
+                           @RequestParam("reqId") RequestContext requestContext) {
+        requestContext.setAppointmentBookRequest(request);
+        return stateMachineService.trigger(SCHEDULE, requestContext);
+    }
+
+    @PostMapping("/approve")
+    @Operation(
+            summary = "Approve request",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "ApproveRequestResponse"),
+                    @ApiResponse(responseCode = "400", ref = "InvalidStateResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse")
+            }
+    )
+    public Object approve(@RequestParam("reqId") RequestContext requestContext) {
+        return stateMachineService.trigger(APPROVE, requestContext);
+    }
+
+    @Operation(
+            summary = "Complete request",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "CompleteRequestResponse"),
+                    @ApiResponse(responseCode = "400", ref = "InvalidStateResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse")
+            }
+    )
+    @PostMapping("/complete")
+    public Object complete(@RequestParam("reqId") RequestContext requestContext) {
+        return stateMachineService.trigger(COMPLETE, requestContext);
+    }
+
+    @PostMapping("/cancel")
+    @Operation(
+            summary = "Cancel request",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "CustomerCancelResponse"),
+                    @ApiResponse(responseCode = "400", ref = "InvalidStateResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse")
+            }
+    )
+    public Object cancel(@RequestParam("reqId") RequestContext requestContext) {
+        return stateMachineService.trigger(CUSTOMER_CANCEL, requestContext);
+    }
+
+    @PostMapping("/register")
+    @Operation(
+            summary = "Register Customer request",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "CustomerCancelResponse"),
+                    @ApiResponse(responseCode = "400", ref = "InvalidStateResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse")
+            }
+    )
+    public Object registerCustomer(@RequestParam("reqId") RequestContext requestContext,
+                                   @RequestBody @Validated(value = CustomerProfileRequest.RegisterRequestGroup.class)
+                                   CustomerProfileRequest profileRequest) {
+        var state = stateMachineService.getSm(requestContext).getState().getId();
+        if (!States.COMPLETED.name().equals(state)) {
+            throw AppError.create(AppErrors.INVALID_STATE);
+        }
+
+        customerService.register(requestContext, profileRequest);
+        return Map.of("message", "success");
     }
 }

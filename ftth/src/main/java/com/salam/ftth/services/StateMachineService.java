@@ -11,6 +11,7 @@ import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
+import org.springframework.statemachine.StateMachine;
 import org.springframework.stereotype.Service;
 
 import java.time.ZonedDateTime;
@@ -72,5 +73,9 @@ public class StateMachineService {
     public RequestContext restore(RequestContext requestContext) {
         var sm = stateMachineAdapter.restore(requestContext);
         return RequestContext.fromStateMachine(sm);
+    }
+
+    public StateMachine<String, String> getSm(RequestContext requestContext) {
+        return stateMachineAdapter.restore(requestContext);
     }
 }

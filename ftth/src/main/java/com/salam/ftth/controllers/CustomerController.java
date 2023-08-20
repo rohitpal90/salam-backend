@@ -44,7 +44,7 @@ public class CustomerController {
             }))
     )
     public Object registerCustomer(@RequestBody @Valid RegisterRequest registerRequest) {
-        customerService.register(registerRequest);
+        customerService.register(registerRequest, false);
         return Map.of("message", "success");
     }
 }

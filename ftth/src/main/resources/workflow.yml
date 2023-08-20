@@ -7,6 +7,36 @@ transitions:
   - source: MOBILE_VERIFICATION
     target: CONTACT_COLLECTION
     event: VERIFY_MOBILE
+  - source: MOBILE_VERIFICATION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
   - source: CONTACT_COLLECTION
-    target: COVERAGE_VERIFICATION
+    target: LOCATION_VERIFICATION
     event: ADD_CONTACT
+  - source: CONTACT_COLLECTION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: LOCATION_VERIFICATION
+    target: INSTALLATION_SCHEDULE
+    event: ADD_LOCATION
+  - source: LOCATION_VERIFICATION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: INSTALLATION_SCHEDULE
+    target: REQUEST_CONFIRMATION
+    event: SCHEDULE
+  - source: INSTALLATION_SCHEDULE
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: REQUEST_CONFIRMATION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL
+  - source: REQUEST_CONFIRMATION
+    target: INSTALLATION
+    event: APPROVE
+  - source: INSTALLATION
+    target: COMPLETED
+    event: COMPLETE
+  - source: INSTALLATION
+    target: CANCELLED
+    event: CUSTOMER_CANCEL

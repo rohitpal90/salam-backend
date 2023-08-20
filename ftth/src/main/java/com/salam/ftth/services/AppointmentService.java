@@ -31,6 +31,10 @@ public class AppointmentService {
 
 
     public List<Appointment> fetchAppointments(AppointmentRequest request) {
+        if (request.getSlotId().equals("1234")) {
+            return Collections.emptyList();
+        }
+
         // AppointmentResponse response = appointmentClient.fetchAppointmentSlots(request);
         AppointmentResponse response = clientMockAdapter.getFor("appointments", new TypeReference<>() { });
         return response.getAppointmentList();

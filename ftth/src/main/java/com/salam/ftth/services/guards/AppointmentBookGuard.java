@@ -33,6 +33,7 @@ public class AppointmentBookGuard extends GuardHandler {
         appointmentRequest.setAccessMode("GPON");
         appointmentRequest.setStartDate("2022-11-11");
         appointmentRequest.setSubsPlanId("4003");
+        appointmentRequest.setSlotId(request.getSlotId());
         var appointments = appointmentService.fetchAppointments(appointmentRequest);
 
         if (CollectionUtils.isEmpty(appointments)) {

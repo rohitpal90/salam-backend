@@ -10,4 +10,5 @@ public class AppointmentRequest {
     private Integer offerId;
     private String subsPlanId;
     private Integer subsEventId;
+    private String slotId;
 }

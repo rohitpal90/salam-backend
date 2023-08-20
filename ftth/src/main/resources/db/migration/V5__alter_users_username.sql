@@ -1,0 +1,1 @@
+ALTER table users add column username varchar(100) unique;

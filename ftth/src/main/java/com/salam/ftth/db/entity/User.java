@@ -21,6 +21,7 @@ public class User {
     private String password;
     private String totp;
     private String phone;
+    private String username;
     private boolean active;
 
     @OneToMany

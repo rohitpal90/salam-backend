@@ -25,8 +25,17 @@ public class VerifySmsGuard extends GuardHandler {
         String mobileOtp = verifyCustomerRequest.getOtp();
         customerService.verifyBySms(mobileOtp, requestContext);
 
+        var metaInfo = requestContext.getMeta();
+        var identityInfo = metaInfo.getIdentityInfo();
+
+        var customerInfo = metaInfo.getCustomerInfo();
+        customerInfo.setFullName(identityInfo.getFirstName() + " " + identityInfo.getLastName());
+        customerInfo.setNationality(identityInfo.getNationality());
+        customerInfo.setDob(identityInfo.getDob());
+        customerInfo.setCity(identityInfo.getCity());
         requestContext.setVerified(true);
-        requestContext.setToStateMachineState(stateMachine);
+
+        metaInfo.setCustomerInfo(customerInfo);
     }
 
     @Override

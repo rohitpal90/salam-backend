@@ -111,12 +111,26 @@
   },
   "SummarySuccessResponse": {
     "customerInfo": {
-      "mobile": "+966512345678",
-      "fullName": "string",
-      "email": "string@gmail.com",
-      "username": "string"
+      "id": "1223456789",
+      "dob": "02-2022",
+      "mobile": "+966512375471",
+      "email": "someone@yopmail.com",
+      "odbPlateNumber": "1234",
+      "lat": 0,
+      "lng": 0,
+      "fullName": "Ahmed Mohammed",
+      "provider": "Salam",
+      "nationality": "Saudi",
+      "city": "Riyadh"
     },
-    "reqId": "2307101000000001"
+    "appointment": {
+      "taskType": "T1002",
+      "appointmentDatetime": "2022-09-11,18:00 - 21:00",
+      "teamId": "84",
+      "slotId": "1"
+    },
+    "state": "COMPLETED",
+    "reqId": "2308151000000036"
   },
   "NotFoundResponse": {
     "message": "Not Found"
@@ -216,7 +230,51 @@
   },
   "ContactInfoResponse": {
     "message": "success",
-    "state": "COVERAGE_VERIFICATION",
-    "reqId": "2308131000000028"
+    "state": "LOCATION_VERIFICATION",
+    "reqId": "2308151000000032"
+  },
+  "LocationInfoRequest": {
+    "odbPlateNumber": "1234",
+    "provider": "Salam",
+    "lat": 0,
+    "lng": 0
+  },
+  "LocationInfoResponse": {
+    "message": "success",
+    "state": "INSTALLATION_SCHEDULE",
+    "reqId": "2308151000000031"
+  },
+  "ApproveRequestResponse": {
+    "message": "success",
+    "state": "INSTALLATION",
+    "reqId": "2308151000000031"
+  },
+  "CompleteRequestResponse": {
+    "message": "success",
+    "state": "COMPLETED",
+    "reqId": "2308151000000031"
+  },
+  "AppointmentResponse": {
+    "status": "success",
+    "appointmentList": [
+      {
+        "taskType": "T1002",
+        "appointmentDatetime": "2023-09-11,18:00 - 21:00",
+        "teamId": "84",
+        "slotId": "1"
+      },
+      {
+        "taskType": "T1002",
+        "appointmentDatetime": "2023-09-11,21:00 - 23:59",
+        "teamId": "84",
+        "slotId": "2"
+      },
+      {
+        "taskType": "T1002",
+        "appointmentDatetime": "2023-09-12,09:00 - 12:00",
+        "teamId": "84",
+        "slotId": "3"
+      }
+    ]
   }
 }

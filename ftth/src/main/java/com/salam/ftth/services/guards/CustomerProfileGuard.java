@@ -27,10 +27,10 @@ public class CustomerProfileGuard extends GuardHandler {
     public void handle(StateContext<String, String> context) {
         var stateMachine = context.getStateMachine();
         var requestContext = RequestContext.<RequestContext>fromStateMachine(stateMachine);
-        var metaInfo = requestContext.getMeta();
 
+        var profileRequest = requestContext.getCustomerProfileRequest();
+        var metaInfo = requestContext.getMeta();
         var customerInfo = metaInfo.getCustomerInfo();
-        metaInfo.setCustomerInfo(customerInfo);
 
         var planInfo = metaInfo.getPlanInfo();
         planService.checkPlan(planInfo.getPlanId());
@@ -52,7 +52,7 @@ public class CustomerProfileGuard extends GuardHandler {
         identityInfo.setLastName("Mohammed");
         identityInfo.setNationality("Saudi");
         identityInfo.setCity("Riyadh");
-        identityInfo.setDob(customerInfo.getDob());
+        identityInfo.setDob(profileRequest.getDob());
         metaInfo.setIdentityInfo(identityInfo);
 
         // TODO: integrate later

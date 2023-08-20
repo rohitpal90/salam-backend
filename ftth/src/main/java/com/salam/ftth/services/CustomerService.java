@@ -14,10 +14,7 @@ import com.salam.ftth.db.entity.Role;
 import com.salam.ftth.db.entity.User;
 import com.salam.ftth.model.RequestContext;
 import com.salam.ftth.model.UserMetaInfo;
-import com.salam.ftth.model.request.IDType;
-import com.salam.ftth.model.request.OtpOpType;
-import com.salam.ftth.model.request.OtpVerifyRequest;
-import com.salam.ftth.model.request.RegisterRequest;
+import com.salam.ftth.model.request.*;
 import com.salam.ftth.model.response.CustomerSubscription;
 import com.salam.ftth.repos.RoleRepository;
 import com.salam.ftth.repos.UserRepository;
@@ -64,19 +61,22 @@ public class CustomerService {
         });
     }
 
-    public void register(RegisterRequest registerRequest) {
+    public void register(RegisterRequest registerRequest, boolean isVerified) {
         var user = new User();
         user.setName(registerRequest.getFullName());
         user.setEmail(registerRequest.getEmail());
         user.setPhone(registerRequest.getMobile());
+        user.setUsername(registerRequest.getUsername());
         user.setPassword(
                 passwordEncoder.encode(registerRequest.getPassword())
         );
-        user.setActive(false); // activate only after otp verification
 
-        var secret = otpService.generateSecret();
-        var totp = otpService.generateCode(secret);
-        user.setTotp(String.format("%s_%s", OtpOpType.REGISTER.name(), secret));
+        user.setActive(isVerified);
+        if (!isVerified) {
+            var secret = otpService.generateSecret();
+            var totp = otpService.generateCode(secret);
+            user.setTotp(String.format("%s_%s", OtpOpType.REGISTER.name(), secret));
+        }
 
         var meta = new UserMetaInfo(
                 IDType.valueOf(registerRequest.getIdType()),
@@ -94,7 +94,26 @@ public class CustomerService {
             throw AppError.create(USER_EXISTS);
         }
 
-        // send otp request
+        if (!isVerified) {
+            // send otp request
+        }
+    }
+
+    public void register(RequestContext requestContext, CustomerProfileRequest profileRequest) {
+        var meta = requestContext.getMeta();
+        var customerInfo = meta.getCustomerInfo();
+
+        var registerRequest = new RegisterRequest();
+        registerRequest.setEmail(customerInfo.getEmail());
+        registerRequest.setDob(customerInfo.getDob());
+        registerRequest.setMobile(customerInfo.getMobile());
+        registerRequest.setUsername(profileRequest.getUsername());
+        registerRequest.setPassword(profileRequest.getPassword());
+        registerRequest.setFullName(customerInfo.getFullName());
+        registerRequest.setIdType(ninToIDType(customerInfo.getId()).name());
+        registerRequest.setId(customerInfo.getId());
+
+        register(registerRequest, true);
     }
 
     public void verifyUser(User user) {
@@ -135,7 +154,6 @@ public class CustomerService {
 
         // send totp
     }
-
 //    public IdentityInfo verifyAndGetCustomerInfo(CustomerProfileRequest customerInfo) {
 //        var nin = customerInfo.getId();
 //        var dateOfBirth = customerInfo.getDob();
@@ -162,6 +180,7 @@ public class CustomerService {
 //        var addresses = addressesResponse.getData();
 //
 //        return new IdentityInfo(entityDto, addresses);
+
 //    }
 
     private void handleVerifyErrorIfRequired(FeignException e, Locale locale) {
@@ -214,4 +233,17 @@ public class CustomerService {
             throw AppError.create(AppErrors.INVALID_OTP);
         }
     }
+
+    public static boolean isCitizen(String nin) {
+        return nin.startsWith("1");
+    }
+
+    public static IDType ninToIDType(String nin) {
+        if (isCitizen(nin)) {
+            return IDType.CITIZEN;
+        } else {
+            return IDType.EXPAT;
+        }
+    }
+
 }
