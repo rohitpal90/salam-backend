@@ -15,6 +15,7 @@ public class RequestMetaInfo {
     private PlanInfo planInfo;
     private SendOtpResponse verifyInfo;
     private IdentityInfo identityInfo;
+    private PaymentInfo paymentInfo;
 
     public RequestMetaInfo(CustomerProfileRequest profileRequest) {
         this.customerInfo = profileRequest;

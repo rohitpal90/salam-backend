@@ -46,15 +46,16 @@ public class StateMachineService {
         return String.format("%s%d%09d", prefix, wfUser.getId(), currentOrderCount + 1);
     }
 
-    public Optional<Object> fetchRequest(String requestId, Long userId) {
-        var request = em.createQuery(
+    public Optional<?> fetchRequest(String requestId) {
+        var requests = em.createQuery(
                         "select r from Request r where r.userId = :userId " +
                                 "and r.orderId = :orderId")
                 .setParameter("userId", wfUser.getId())
                 .setParameter("orderId", requestId)
-                .getSingleResult();
+                .setMaxResults(1)
+                .getResultList();
 
-        return Optional.of(request);
+        return requests.stream().findFirst();
     }
 
     public RequestContext initiate(CustomerProfileRequest customerInfo, PlanInfo planInfo) {
@@ -77,5 +78,11 @@ public class StateMachineService {
 
     public StateMachine<String, String> getSm(RequestContext requestContext) {
         return stateMachineAdapter.restore(requestContext);
+    }
+
+    public void persist(RequestContext requestContext) {
+        var sm = this.getSm(new RequestContext(requestContext.getOrderId(), requestContext.getUserId()));
+        sm = requestContext.setToStateMachineState(sm);
+        stateMachineAdapter.persist(sm);
     }
 }

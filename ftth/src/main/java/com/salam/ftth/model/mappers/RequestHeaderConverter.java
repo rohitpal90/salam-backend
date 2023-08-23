@@ -15,7 +15,7 @@ public class RequestHeaderConverter implements Converter<String, RequestContext>
 
     @Override
     public RequestContext convert(String requestId) {
-        return requestService.fetchRequest(requestId);
+        return requestService.checkRequest(requestId);
     }
 
     public static boolean matchMismatchError(MethodArgumentTypeMismatchException e) {

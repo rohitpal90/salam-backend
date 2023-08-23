@@ -51,7 +51,7 @@ public class SalamWebClientConfiguration implements BeanDefinitionRegistryPostPr
                 .orElseThrow(IllegalStateException::new);
 
         var annotatedTypeScanner = new AnnotatedTypeScanner(FeignClient.class);
-        var candidateClients = annotatedTypeScanner.findTypes("com.salam.libs.feign.elm.client");
+        var candidateClients = annotatedTypeScanner.findTypes("com.salam.libs.feign");
 
         var configMap = new HashMap<Class<?>, ClientConfiguration>();
         candidateClients.forEach(candidateClient -> {

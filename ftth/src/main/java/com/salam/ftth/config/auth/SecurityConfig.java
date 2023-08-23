@@ -63,6 +63,7 @@ public class SecurityConfig extends JwtSecurityConfig {
                             "/customers/register",
                             "/requests/**",
                             "/appointments",
+                            "/payments/**",
                             "/plans").permitAll();
                     registry.anyRequest().authenticated();
                 })

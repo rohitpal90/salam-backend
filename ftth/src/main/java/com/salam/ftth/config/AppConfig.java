@@ -7,12 +7,13 @@ import com.fasterxml.jackson.databind.introspect.JacksonAnnotationIntrospector;
 import com.salam.ftth.config.auth.UserDetailService;
 import com.salam.ftth.db.entity.User;
 import com.salam.ftth.model.request.AuthenticationRequestPOJOBuilder;
+import com.salam.libs.annotations.EnablePaymentServices;
+import com.salam.libs.annotations.EnableSalamWebClients;
 import com.salam.libs.annotations.EnableSalamWorkflow;
 import eu.fraho.spring.securityJwt.base.dto.AuthenticationRequest;
 import eu.fraho.spring.securityJwt.base.dto.JwtUser;
 import jakarta.persistence.EntityManager;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cloud.openfeign.EnableFeignClients;
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,7 +34,8 @@ import static java.util.Objects.requireNonNull;
 @Configuration
 @ComponentScan("dev.samstevens.totp.spring.autoconfigure")
 @EnableSalamWorkflow
-@EnableFeignClients
+@EnableSalamWebClients
+@EnablePaymentServices
 public class AppConfig {
 
     @Value("classpath:mocks/*")

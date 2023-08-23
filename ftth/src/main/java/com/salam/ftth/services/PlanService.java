@@ -29,4 +29,9 @@ public class PlanService {
             throw AppError.create(PLAN_NOT_FOUND);
         }
     }
+
+    public Plan getPlanById(String planId) {
+        return planRepository.getPlanById(planId)
+                .orElseThrow(() -> AppError.create(PLAN_NOT_FOUND));
+    }
 }

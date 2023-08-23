@@ -17,9 +17,9 @@ public class RequestService {
     private final StateMachineService stateMachineService;
     private final JwtUser wfUser;
 
-    public RequestContext fetchRequest(String requestId) {
-        var request = stateMachineService
-                .fetchRequest(requestId, wfUser.getId())
+    public RequestContext checkRequest(String requestId) {
+        stateMachineService
+                .fetchRequest(requestId)
                 .orElseThrow(() -> AppError.create(REQUEST_NOT_FOUND));
 
         RequestContext requestContext = new RequestContext(requestId, wfUser.getId());

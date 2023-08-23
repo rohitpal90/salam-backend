@@ -37,8 +37,9 @@ public abstract class RequestContext<M> {
         return ((T) reqContext);
     }
 
-    public void setToStateMachineState(StateMachine<String, String> stateMachine) {
+    public StateMachine<String, String> setToStateMachineState(StateMachine<String, String> stateMachine) {
         stateMachine.getExtendedState().getVariables().put(KEY, this);
+        return stateMachine;
     }
 
     public Long getRequestId() {

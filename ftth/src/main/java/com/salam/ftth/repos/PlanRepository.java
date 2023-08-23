@@ -8,6 +8,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PlanRepository extends PagingAndSortingRepository<Plan, Long> {
@@ -21,4 +22,6 @@ public interface PlanRepository extends PagingAndSortingRepository<Plan, Long> {
     @Query(value = "select case when count(1) > 0 then 'true' else 'false' end from plans p " +
             "where p.id = :planId", nativeQuery = true)
     boolean existsByPlanId(String planId);
+
+    Optional<Plan> getPlanById(String planId);
 }

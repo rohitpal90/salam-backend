@@ -20,7 +20,8 @@ public enum AppErrors implements AppErrorStruct {
     NO_APPOINTMENTS_FOUND(HttpStatus.BAD_REQUEST, "No appointments found"),
     INVALID_OTP(HttpStatus.BAD_REQUEST, "Invalid OTP"),
     INVALID_STATE(HttpStatus.BAD_REQUEST, "Invalid state"),
-    PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "Password mismatch");
+    PASSWORD_MISMATCH(HttpStatus.BAD_REQUEST, "Password mismatch"),
+    INVOICE_NOT_FOUND(HttpStatus.BAD_REQUEST, "Invoice not found");
 
     private final HttpStatus httpStatus;
     private final String message;
