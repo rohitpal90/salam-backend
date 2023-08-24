@@ -4,6 +4,8 @@ import com.salam.ftth.model.RequestContext;
 import com.salam.ftth.services.StateMachineService;
 import com.salam.libs.feign.payment.client.model.PaymentUpdate;
 import com.salam.libs.payment.PaymentService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.AllArgsConstructor;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
@@ -22,6 +24,14 @@ public class PaymentController {
     private static final TaskExecutor INVOICE_REFRESH_EXECUTOR = new ConcurrentTaskExecutor();
 
     @PostMapping("/init")
+    @Operation(
+            summary = "Initiate payment request",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "PaymentInitSuccessResponse"),
+                    @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse"),
+            }
+    )
     public Object initPayment(@RequestParam("reqId") RequestContext requestContext) {
         var response = paymentService.createInvoice(requestContext.getOrderId());
         return new HashMap<>() {{
@@ -32,6 +42,14 @@ public class PaymentController {
     }
 
     @GetMapping("/check")
+    @Operation(
+            summary = "Check payment request status",
+            responses = {
+                    @ApiResponse(responseCode = "200", ref = "PaymentStatusSuccessResponse"),
+                    @ApiResponse(responseCode = "400", ref = "BadRequestResponse"),
+                    @ApiResponse(responseCode = "404", ref = "NotFoundResponse"),
+            }
+    )
     public Object checkStatus(@RequestParam("reqId") RequestContext requestContext) {
         stateMachineService.restore(requestContext);
 
@@ -47,6 +65,7 @@ public class PaymentController {
     }
 
     @PostMapping("/updates")
+    @Operation(summary = "Payment updates webhook")
     public Object paymentUpdates(@RequestBody PaymentUpdate paymentUpdate) {
         // TODO: verify sign
         paymentService.processUpdate(paymentUpdate);

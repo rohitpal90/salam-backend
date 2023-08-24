@@ -280,5 +280,13 @@
   "CustomerRequestRegisterRequest": {
     "username": "someusername",
     "password": "p@assw@49"
+  },
+  "PaymentInitSuccessResponse": {
+    "url": "https://payment-sample-url/foo",
+    "description": "Fiber Postpaid,500",
+    "reqId": "2308231000000038"
+  },
+  "PaymentStatusSuccessResponse": {
+    "status": "INITIATED"
   }
 }
