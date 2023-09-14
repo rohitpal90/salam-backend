@@ -1,14 +1,14 @@
 package com.salam.ftth.controllers;
 
 import com.salam.ftth.model.RequestContext;
+import com.salam.ftth.model.request.PaymentInitRequest;
 import com.salam.ftth.services.StateMachineService;
 import com.salam.libs.feign.payment.client.model.PaymentUpdate;
 import com.salam.libs.payment.PaymentService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
@@ -21,7 +21,6 @@ public class PaymentController {
 
     private final PaymentService paymentService;
     private final StateMachineService stateMachineService;
-    private static final TaskExecutor INVOICE_REFRESH_EXECUTOR = new ConcurrentTaskExecutor();
 
     @PostMapping("/init")
     @Operation(
@@ -32,10 +31,13 @@ public class PaymentController {
                     @ApiResponse(responseCode = "404", ref = "NotFoundResponse"),
             }
     )
-    public Object initPayment(@RequestParam("reqId") RequestContext requestContext) {
-        var response = paymentService.createInvoice(requestContext.getOrderId());
+    public Object initPayment(@RequestParam("reqId") RequestContext requestContext,
+                              @RequestBody @Valid PaymentInitRequest paymentInitRequest) {
+        var response = paymentService.createInvoice(requestContext.getOrderId(),
+                new com.salam.libs.payment.model.PaymentInitRequest(paymentInitRequest.getReturnUrl()));
+
         return new HashMap<>() {{
-            put("url", response.getPaymentUrl());
+            put("url", response.getUrl());
             put("reqId", requestContext.getOrderId());
             put("description", response.getDescription());
         }};
@@ -55,11 +57,12 @@ public class PaymentController {
 
         var metaInfo = requestContext.getMeta();
         var paymentInfo = metaInfo.getPaymentInfo();
-
         var invoiceId = paymentInfo.getInvoiceId();
-        INVOICE_REFRESH_EXECUTOR.execute(() -> {
-            paymentService.refreshInvoice(invoiceId);
-        });
+
+        // reload
+        RequestContext newReqContext = paymentService.refreshInvoice(invoiceId);
+        metaInfo = newReqContext.getMeta();
+        paymentInfo = metaInfo.getPaymentInfo();
 
         return Map.of("status", paymentInfo.getStatus());
     }

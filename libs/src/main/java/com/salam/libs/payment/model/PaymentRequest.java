@@ -4,12 +4,21 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
-import java.util.Map;
 
 @Data
 @Builder
 public class PaymentRequest {
     private String description;
     private BigDecimal amount;
-    private Map<String, Object> attrs;
+    private Attrs attrs;
+
+    @Data
+    @Builder
+    public static class Attrs {
+        private String name;
+        private String email;
+        private String mobile;
+        private String state;
+        private String reqId;
+    }
 }

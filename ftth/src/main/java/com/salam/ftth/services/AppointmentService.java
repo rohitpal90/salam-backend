@@ -31,7 +31,7 @@ public class AppointmentService {
 
 
     public List<Appointment> fetchAppointments(AppointmentRequest request) {
-        if (request.getSlotId().equals("1234")) {
+        if ("1234".equals(request.getSlotId())) {
             return Collections.emptyList();
         }
 

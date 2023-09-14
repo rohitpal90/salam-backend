@@ -1,5 +1,6 @@
 package com.salam.ftth.services;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.salam.ftth.config.exception.AppError;
 import com.salam.ftth.model.PaymentInfo;
 import com.salam.ftth.model.RequestContext;
@@ -15,9 +16,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Optional;
 
-import static com.salam.ftth.config.exception.AppErrors.REQUEST_NOT_FOUND;
+import static com.salam.ftth.config.exception.AppErrors.FTTH_APP_ERROR;
 
 @Service
 @AllArgsConstructor
@@ -27,6 +27,7 @@ public class PaymentProcessorImpl implements PaymentProcessorService {
     private final PlanService planService;
     private final RequestService requestService;
     private final JwtUser wfUser;
+    private final ObjectMapper objectMapper;
 
 
     @Override
@@ -44,13 +45,15 @@ public class PaymentProcessorImpl implements PaymentProcessorService {
         return PaymentRequest.builder()
                 .amount(new BigDecimal(price))
                 .description(plan.getMeta().getName())
-                .attrs(new HashMap<>() {{
-                    put("name", customerInfo.getFullName());
-                    put("email", customerInfo.getEmail());
-                    put("mobile", customerInfo.getMobile());
-                    put("state", sm.getState().getId());
-                    put("reqId", reqId);
-                }})
+                .attrs(
+                        PaymentRequest.Attrs.builder()
+                                .name(customerInfo.getFullName())
+                                .email(customerInfo.getEmail())
+                                .mobile(customerInfo.getMobile())
+                                .state(sm.getState().getId())
+                                .reqId(reqId)
+                                .build()
+                )
                 .build();
     }
 
@@ -60,18 +63,18 @@ public class PaymentProcessorImpl implements PaymentProcessorService {
         var metaInfo = requestContext.getMeta();
 
         var paymentMeta = new HashMap<String, Object>() {{
-            put("paymentMethod", response.getPaymentMethod());
+            put("payments", response.getPayments());
             put("amount", response.getAmount());
-            put("applicationId", response.getApplicationId());
+            put("createdAt", response.getCreatedAt());
+            put("updatedAt", response.getUpdatedAt());
+            put("expiresAt", response.getExpiresAt());
         }};
-        paymentMeta.putAll(Optional.of(response.getMetadata()).orElseGet(HashMap::new));
 
-        var now = new Date();
         var paymentInfo = PaymentInfo.builder()
                 .status(response.getStatus())
-                .invoiceId(response.getInvoiceId())
-                .createdAt(now)
-                .updatedAt(now)
+                .invoiceId(response.getId())
+                .createdAt(response.getCreatedAt())
+                .updatedAt(response.getUpdatedAt())
                 .meta(paymentMeta).build();
         metaInfo.setPaymentInfo(paymentInfo);
 
@@ -81,12 +84,16 @@ public class PaymentProcessorImpl implements PaymentProcessorService {
 
     @Override
     public RequestContext processUpdate(InvoiceInfoResponse invoice, @Nullable String updateId) {
-        var invoiceMetadata = invoice.getMetadata();
-        if (!invoiceMetadata.containsKey("reqId")) {
-            throw AppError.create(REQUEST_NOT_FOUND);
+        var metadata = invoice.getMetadata();
+
+        String reqId = "";
+        try {
+            var metadataJson = objectMapper.readTree(metadata);
+            reqId = metadataJson.get("reqId").asText();
+        } catch (Exception e) {
+            throw AppError.create(FTTH_APP_ERROR);
         }
 
-        var reqId = ((String) invoiceMetadata.get("reqId"));
         var requestContext = requestService.checkRequest(reqId);
         stateMachineService.restore(requestContext);
 

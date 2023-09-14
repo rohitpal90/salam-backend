@@ -16,4 +16,5 @@ import org.springframework.context.annotation.DependsOn;
 public class PaymentProperties {
     private String applicationId;
     private String applicationName;
+    private Long expirationMinutes;
 }
